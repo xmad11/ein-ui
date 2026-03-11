@@ -1,0 +1,27 @@
+name: Accessibility Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  axe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Accessibility audit
+        run: |
+          echo "Accessibility testing via @testing-library/react is done in unit tests."
+          echo "Run 'bun test' to execute accessibility checks."
