@@ -9,6 +9,9 @@ import {
   BarChart3,
 } from "lucide-react";
 import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/registry/liquid-glass/glass-tabs";
+import { StockTickerWidget } from "@/registry/widgets/stock-widget";
+import { ForecastWidget } from "@/registry/widgets/weather-widget";
+import { DigitalClockWidget } from "@/registry/widgets/clock-widget";
 
 const tabs = [
   { value: "dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -16,6 +19,14 @@ const tabs = [
   { value: "users", icon: Users, label: "Users" },
   { value: "projects", icon: FolderKanban, label: "Projects" },
   { value: "settings", icon: Settings, label: "Settings" },
+];
+
+const forecastData = [
+  { day: "Mon", high: 31, low: 24, condition: "sunny" as const },
+  { day: "Tue", high: 29, low: 23, condition: "cloudy" as const },
+  { day: "Wed", high: 27, low: 22, condition: "rainy" as const },
+  { day: "Thu", high: 30, low: 24, condition: "sunny" as const },
+  { day: "Fri", high: 32, low: 25, condition: "sunny" as const },
 ];
 
 export default function DashboardPage() {
@@ -54,10 +65,10 @@ export default function DashboardPage() {
 
         <GlassTabsContent value="users" className="h-full m-0 mt-0">
           <div className="h-full flex items-center justify-center p-6">
-            <div className="text-center">
-              <Users className="h-16 w-16 text-slate-600 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-slate-400">Users</h2>
-              <p className="text-slate-500 mt-2">Manage team members</p>
+            <div className="flex flex-col gap-4 w-full max-w-sm">
+              <StockTickerWidget symbol="AAPL" price={198.45} change={2.34} changePercent={1.19} />
+              <ForecastWidget forecast={forecastData} />
+              <DigitalClockWidget showSeconds={false} className="w-full" />
             </div>
           </div>
         </GlassTabsContent>
