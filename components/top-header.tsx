@@ -29,7 +29,7 @@ export function TopHeader() {
               alt="Einui Liquid Glass Components"
             />
             <span className="bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent text-base font-bold">
-              EinUI
+              xmad
             </span>
           </Link>
 
