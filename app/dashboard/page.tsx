@@ -105,15 +105,20 @@ export default function DashboardPage() {
     <GlassTabs
       value={activeTab}
       onValueChange={setActiveTab}
-      className="min-h-screen bg-slate-900 relative overflow-hidden pt-16 flex flex-col"
+      className="min-h-screen relative overflow-hidden bg-background pt-16 flex flex-col"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-linear-to-br from-slate-900 via-blue-950 to-slate-900" />
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 bg-linear-to-b from-cyan-950/20 via-transparent to-purple-950/10" />
 
-      {/* Animated orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-cyan-500/15 rounded-full blur-3xl animate-pulse" />
+      {/* Grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: "64px 64px",
+        }}
+      />
 
       {/* Tab Content - Fills available space */}
       <div className="flex-1 relative z-10 overflow-auto p-6">
