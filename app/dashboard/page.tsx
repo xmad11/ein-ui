@@ -105,7 +105,7 @@ export default function DashboardPage() {
     <GlassTabs
       value={activeTab}
       onValueChange={setActiveTab}
-      className="min-h-screen relative overflow-hidden bg-[#0a0a0a] pt-16 flex flex-col"
+      className="min-h-screen relative overflow-hidden bg-background pt-16 flex flex-col"
     >
       {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-linear-to-b from-cyan-950/20 via-transparent to-purple-950/10" />
