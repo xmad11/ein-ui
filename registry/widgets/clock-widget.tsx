@@ -50,7 +50,7 @@ function AnalogClockWidget({
   const numbers = showNumbers ? [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] : [];
 
   return (
-    <GlassWidgetBase className={cn("p-3 w-full h-full flex items-center justify-center", className)} size="sm" glowColor="blue">
+    <GlassWidgetBase className={cn("w-full h-full flex items-center justify-center", className)} size="sm" width="sm" glowColor="blue">
       <div className={cn("relative", config.container)}>
         {/* Clock face with glass effect */}
         <div className="absolute inset-0 rounded-full border border-white/20  bg-white/5 backdrop-blur-sm shadow-inner" />
@@ -160,7 +160,9 @@ function DigitalClockWidget({
 
   return (
     <GlassWidgetBase
-      className={cn("w-full min-w-0", className)}
+      className={className}
+      size="md"
+      width="sm"
       glowColor="cyan"
     >
       <div className="flex flex-col items-center justify-center h-full">
@@ -214,7 +216,7 @@ function WorldClockWidget({ clocks, className }: WorldClockWidgetProps) {
   }, [clocks]);
 
   return (
-    <GlassWidgetBase className={cn("min-w-45", className)} glowColor="blue">
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor="blue">
       <div className="space-y-3">
         {clocks.map((clock, i) => (
           <div key={i} className="flex items-center justify-between">
@@ -266,7 +268,7 @@ function StopwatchWidget({ className }: StopwatchWidgetProps) {
   };
 
   return (
-    <GlassWidgetBase className={cn(className)} glowColor="cyan">
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor="cyan">
       <div className="text-3xl font-light text-white text-center mb-4 tabular-nums">
         {formatTime(time)}
       </div>
@@ -328,7 +330,9 @@ function TimerWidget({ initialMinutes = 5, className }: TimerWidgetProps) {
 
   return (
     <GlassWidgetBase
-      className={cn("min-w-40", className)}
+      className={className}
+      size="md"
+      width="sm"
       glowColor={timeLeft === 0 ? "red" : "green"}
     >
       <div className="relative flex items-center justify-center mb-4 p-2">

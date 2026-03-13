@@ -41,8 +41,9 @@ function StatCard({
 
   return (
     <GlassWidgetBase
-      className={cn("min-w-48", className)}
+      className={className}
       size="md"
+      width="sm"
       glowColor={glowColor}
     >
       <div className="flex items-start justify-between mb-3">
@@ -84,8 +85,9 @@ function MetricStat({
 
   return (
     <GlassWidgetBase
-      className={cn("min-w-56", className)}
+      className={className}
       size="md"
+      width="sm"
       glowColor={glowColor}
     >
       <div className="flex items-center justify-between mb-3">
@@ -166,8 +168,9 @@ function ComparisonStat({
 
   return (
     <GlassWidgetBase
-      className={cn("min-w-52", className)}
+      className={className}
       size="md"
+      width="sm"
       glowColor={glowColor}
     >
       <div className="flex items-center justify-between mb-4">
@@ -280,6 +283,7 @@ function CircularProgressStat({
     <GlassWidgetBase
       className={cn("flex flex-col items-center justify-center", className)}
       size="md"
+      width="sm"
       glowColor={glowColor}
     >
       <div className={cn("relative", config.container)}>

@@ -64,7 +64,7 @@ function WeatherWidget({
   } as const;
 
   return (
-    <GlassWidgetBase className={cn("min-w-48", className)} size="md" glowColor={glowColors[icon]}>
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor={glowColors[icon]}>
       {location && <div className="text-white/60 text-sm mb-2">{location}</div>}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -121,7 +121,7 @@ function CurrentWeatherWidget({
       : "cyan";
 
   return (
-    <GlassWidgetBase className={cn("min-w-50", className)} glowColor={glowColor}>
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor={glowColor}>
       <div className="flex items-start justify-between mb-3">
         <div>
           <div className="text-white font-medium">{location}</div>
@@ -204,7 +204,7 @@ function DetailedWeatherWidget({
   } as const;
 
   return (
-    <GlassWidgetBase className={cn("min-w-64", className)} size="lg" glowColor={glowColors[icon]}>
+    <GlassWidgetBase className={className} size="lg" width="md" glowColor={glowColors[icon]}>
       {location && <div className="text-white/60 text-sm mb-3">{location}</div>}
       <div className="flex items-stretch justify-between mb-4">
         <div className="flex items-center gap-4">
@@ -278,7 +278,7 @@ function ForecastWeatherWidget({
   const CurrentIcon = iconMap[current.icon || "sun"];
 
   return (
-    <GlassWidgetBase className={cn("min-w-72", className)} size="lg" glowColor="cyan">
+    <GlassWidgetBase className={className} size="lg" width="md" glowColor="cyan">
       {location && <div className="text-white/60 text-sm mb-3">{location}</div>}
       <div className="flex items-center gap-4 mb-4 pb-4 border-b border-white/10">
         <div className="p-3 rounded-xl bg-white/10">
@@ -337,7 +337,7 @@ function HourlyWeatherWidget({ hours, className }: HourlyWeatherWidgetProps) {
   // Guard clause: handle empty hours array
   if (!hours || hours.length === 0) {
     return (
-      <GlassWidgetBase className={cn("min-w-80", className)} size="lg" glowColor="blue">
+      <GlassWidgetBase className={className} size="lg" width="lg" glowColor="blue">
         <div className="text-white/60 text-sm mb-4">24 Hour Forecast</div>
         <div className="text-center py-8 text-white/40 text-sm">No hourly data available</div>
       </GlassWidgetBase>
@@ -349,7 +349,7 @@ function HourlyWeatherWidget({ hours, className }: HourlyWeatherWidgetProps) {
   const tempRange = maxTemp - minTemp || 1;
 
   return (
-    <GlassWidgetBase className={cn("min-w-80", className)} size="lg" glowColor="blue">
+    <GlassWidgetBase className={className} size="lg" width="lg" glowColor="blue">
       <div className="text-white/60 text-sm mb-8">24 Hour Forecast</div>
       <div className="flex items-end justify-between gap-2">
         {hours.map((hour, i) => {
@@ -385,7 +385,7 @@ interface ForecastWidgetProps {
 
 function ForecastWidget({ forecast = [], className }: ForecastWidgetProps) {
   return (
-    <GlassWidgetBase className={cn("min-w-45", className)} glowColor="amber">
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor="amber">
       <h3 className="text-white/60 text-sm mb-3">5-Day Forecast</h3>
       <div className="space-y-2.5">
         {forecast.map((day, i) => (

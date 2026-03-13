@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 interface GlassWidgetBaseProps extends Omit<HTMLMotionProps<"div">, "children"> {
   children: React.ReactNode
   size?: "sm" | "md" | "lg" | "xl"
+  width?: "sm" | "md" | "lg" | "xl" | "full"
   glowEffect?: boolean
   glowColor?: "cyan" | "purple" | "blue" | "pink" | "green" | "amber" | "red"
   hoverScale?: boolean
@@ -18,6 +19,14 @@ const sizeClasses = {
   md: "p-4",
   lg: "p-5",
   xl: "p-6",
+}
+
+// Standard widget widths for consistent carousel layouts
+const widthClasses = {
+  sm: "min-w-64",   // 256px - compact widgets
+  md: "min-w-72",   // 288px - standard widgets
+  lg: "min-w-80",   // 320px - detailed widgets
+  xl: "min-w-96",   // 384px - complex widgets
 }
 
 const glowColors = {
@@ -80,6 +89,7 @@ const GlassWidgetBase = React.forwardRef<HTMLDivElement, GlassWidgetBaseProps>(
       className,
       children,
       size = "md",
+      width,
       glowEffect = true,
       glowColor = "cyan",
       hoverScale = true,
@@ -122,6 +132,8 @@ const GlassWidgetBase = React.forwardRef<HTMLDivElement, GlassWidgetBaseProps>(
             "after:absolute after:inset-px after:rounded-[calc(1rem-1px)]",
             "after:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] after:pointer-events-none",
             sizeClasses[size],
+            width && width !== "full" && widthClasses[width],
+            width === "full" && "w-full",
             className,
           )}
           role="article"

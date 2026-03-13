@@ -26,7 +26,7 @@ function StockTickerWidget({
   const color = isPositive ? "text-emerald-500" : "text-red-500";
 
   return (
-    <GlassWidgetBase className={cn("min-w-45", className)} glowColor={isPositive ? "green" : "red"}>
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor={isPositive ? "green" : "red"}>
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
           {isPositive ? (
@@ -95,8 +95,9 @@ function CompactStockWidget({
 
   return (
     <GlassWidgetBase
-      className={cn("min-w-35", className)}
+      className={className}
       size="sm"
+      width="sm"
       glowColor={isPositive ? "green" : "red"}
     >
       <div className="flex items-center justify-between">
@@ -147,8 +148,9 @@ function PortfolioWidget({
 
   return (
     <GlassWidgetBase
-      className={cn("min-w-70", className)}
+      className={className}
       size="lg"
+      width="md"
       glowColor={isPositive ? "green" : "red"}
     >
       <div className="flex items-start justify-between mb-4">
@@ -219,7 +221,7 @@ interface MarketOverviewWidgetProps {
 
 function MarketOverviewWidget({ indices = [], className }: MarketOverviewWidgetProps) {
   return (
-    <GlassWidgetBase className={cn("min-w-60", className)} glowColor="cyan">
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor="cyan">
       <h3 className="text-white/60 text-sm mb-4">Market Overview</h3>
       <div className="space-y-3">
         {indices.map((index) => {
@@ -275,7 +277,7 @@ function CryptoWidget({
   const isPositive = change24h >= 0;
 
   return (
-    <GlassWidgetBase className={cn("min-w-50", className)} glowColor={isPositive ? "green" : "red"}>
+    <GlassWidgetBase className={className} size="md" width="sm" glowColor={isPositive ? "green" : "red"}>
       <div className="flex items-start justify-between mb-3">
         <div>
           <div className="text-white font-medium">{symbol}</div>

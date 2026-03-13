@@ -45,7 +45,7 @@ function CalendarWidget({
   if (!internalDate) {
     // Lightweight client-side loading state to avoid using `new Date()` during prerender
     return (
-      <GlassWidgetBase className={cn("min-w-60 p-4", className)} glowColor="purple">
+      <GlassWidgetBase className={className} size="sm" width="sm" glowColor="purple">
         <div className="h-6 w-36 bg-white/8 rounded animate-pulse" />
         <div className="h-36 w-full mt-3 bg-white/8 rounded animate-pulse" />
       </GlassWidgetBase>
@@ -93,7 +93,7 @@ function CalendarWidget({
   };
 
   return (
-    <GlassWidgetBase className={cn("min-w-60", className)} size="sm" glowColor="purple">
+    <GlassWidgetBase className={className} size="sm" width="sm" glowColor="purple">
       {/* ...existing UI... */}
       <div className="flex items-center justify-between mb-3">
         <button
@@ -161,7 +161,9 @@ function CompactCalendarWidget({ date, className }: CompactCalendarWidgetProps) 
     // Render a lightweight client-side loading state to avoid using `new Date()` during prerender
     return (
       <GlassWidgetBase
-        className={cn("flex flex-col items-center justify-center min-w-30", className)}
+        className={cn("flex flex-col items-center justify-center", className)}
+        size="sm"
+        width="sm"
         glowColor="purple"
       >
         <div className="h-4 w-20 bg-white/8 rounded animate-pulse" />
@@ -176,7 +178,9 @@ function CompactCalendarWidget({ date, className }: CompactCalendarWidgetProps) 
 
   return (
     <GlassWidgetBase
-      className={cn("flex flex-col items-center justify-center min-w-30", className)}
+      className={cn("flex flex-col items-center justify-center", className)}
+      size="sm"
+      width="sm"
       glowColor="purple"
     >
       <div className="flex items-center gap-1.5 text-base">
@@ -213,7 +217,7 @@ function EventsCalendarWidget({
 
   if (!internalDate) {
     return (
-      <GlassWidgetBase className={cn("min-w-65", className)} size="lg" glowColor="purple">
+      <GlassWidgetBase className={className} size="lg" width="md" glowColor="purple">
         <div className="h-6 w-24 bg-white/8 rounded animate-pulse" />
         <div className="h-24 w-full mt-3 bg-white/8 rounded animate-pulse" />
       </GlassWidgetBase>
@@ -225,7 +229,7 @@ function EventsCalendarWidget({
   const dayNumber = internalDate.getDate();
 
   return (
-    <GlassWidgetBase className={cn("min-w-65", className)} size="lg" glowColor="purple">
+    <GlassWidgetBase className={className} size="lg" width="md" glowColor="purple">
       <div className="flex items-start justify-between mb-4">
         <div>
           <div className="text-white/60 text-sm">{dayName}</div>
