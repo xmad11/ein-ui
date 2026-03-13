@@ -6,12 +6,13 @@ import { useEffect } from "react"
 export interface WidgetCarouselProps {
   children: React.ReactNode[]
   className?: string
+  gap?: "none" | "sm" | "md" | "lg"
 }
 
-export function WidgetCarousel({ children, className = "" }: WidgetCarouselProps) {
+export function WidgetCarousel({ children, className = "", gap = "md" }: WidgetCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: "center",
     skipSnaps: false,
     dragFree: false,
     containScroll: "trimSnaps",
@@ -23,15 +24,22 @@ export function WidgetCarousel({ children, className = "" }: WidgetCarouselProps
     emblaApi.reInit()
   }, [emblaApi])
 
+  const gapClasses = {
+    none: "",
+    sm: "gap-2",
+    md: "gap-4",
+    lg: "gap-6",
+  }
+
   return (
     <div className={`relative ${className}`}>
       {/* Carousel Container */}
       <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex">
+        <div className={`flex ${gapClasses[gap]}`}>
           {children.map((child, index) => (
             <div
               key={index}
-              className="flex-[0_0_100%] min-w-0"
+              className="flex-[0_0_100%] min-w-0 flex justify-center"
             >
               {child}
             </div>

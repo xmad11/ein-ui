@@ -270,11 +270,11 @@ export default function DashboardPage() {
     >
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      <div className="flex-1 relative z-10 overflow-auto p-6 space-y-6">
+      <div className="flex-1 relative z-10 overflow-auto px-4 py-6 md:px-8 space-y-8">
         {/* ==================== DASHBOARD TAB ==================== */}
-        <GlassTabsContent value="dashboard" className="m-0 mt-0 space-y-6">
+        <GlassTabsContent value="dashboard" className="m-0 mt-0 space-y-8">
           {/* Carousel 1 - Clock & Time Widgets */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <DigitalClockWidget showSeconds />
             <AnalogClockWidget size="lg" />
             <WorldClockWidget clocks={worldClocks} />
@@ -283,7 +283,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 2 - Weather Widgets */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <CurrentWeatherWidget location="San Francisco" temperature={24} condition="sunny" humidity={45} windSpeed={12} />
             <DetailedWeatherWidget temperature={28} condition="Sunny" humidity={55} windSpeed={8} location="New York" />
             <ForecastWidget forecast={forecastData} />
@@ -292,7 +292,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 3 - Stats Cards */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <StatCard title="Active Users" value="2,847" change={{ value: 12.5, type: "increase" }} icon={<Activity className="w-5 h-5" />} glowColor="cyan" />
             <StatCard title="Revenue" value="$45.2K" change={{ value: 8.3, type: "increase" }} icon={<TrendingUp className="w-5 h-5" />} glowColor="cyan" />
             <CircularProgressStat label="CPU Usage" value={67} max={100} unit="%" glowColor="cyan" size="md" />
@@ -301,7 +301,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 4 - Mini Stats */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <MiniStatCard icon={Zap} label="Performance" value="98%" trend="up" glowColor="cyan" />
             <MiniStatCard icon={Heart} label="Health Score" value="95%" trend="up" glowColor="green" />
             <MiniStatCard icon={Shield} label="Security" value="100%" glowColor="purple" />
@@ -310,7 +310,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 5 - Gauges */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <GaugeCard value={75} label="CPU" colorScheme="cyan" />
             <GaugeCard value={45} label="Memory" colorScheme="green" />
             <GaugeCard value={90} label="Disk" colorScheme="purple" />
@@ -320,9 +320,9 @@ export default function DashboardPage() {
         </GlassTabsContent>
 
         {/* ==================== ANALYTICS TAB ==================== */}
-        <GlassTabsContent value="analytics" className="m-0 mt-0 space-y-6">
+        <GlassTabsContent value="analytics" className="m-0 mt-0 space-y-8">
           {/* Carousel 1 - Stocks */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <StockTickerWidget symbol="AAPL" name="Apple Inc." price={198.45} change={2.34} changePercent={1.19} chartData={[190, 192, 188, 195, 193, 197, 198]} />
             <StockTickerWidget symbol="GOOGL" name="Alphabet" price={156.20} change={-1.45} changePercent={-0.92} chartData={[160, 158, 155, 157, 154, 156, 156]} />
             <StockTickerWidget symbol="MSFT" name="Microsoft" price={415.80} change={5.20} changePercent={1.27} chartData={[400, 405, 408, 410, 412, 415, 416]} />
@@ -331,7 +331,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 2 - Crypto */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <CryptoWidget symbol="BTC" name="Bitcoin" price={67234} change24h={2.45} marketCap="$1.32T" volume24h="$28.5B" />
             <CryptoWidget symbol="ETH" name="Ethereum" price={3456} change24h={-1.23} marketCap="$415B" volume24h="$12.3B" />
             <CryptoWidget symbol="SOL" name="Solana" price={178} change24h={5.67} marketCap="$82B" volume24h="$3.2B" />
@@ -340,7 +340,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 3 - Analytics Stats */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <StatCard title="Page Views" value="45.2K" change={{ value: 18, type: "increase" }} glowColor="purple" />
             <StatCard title="Bounce Rate" value="32%" change={{ value: 4, type: "decrease" }} glowColor="purple" />
             <StatCard title="Session Duration" value="4m 32s" change={{ value: 12, type: "increase" }} glowColor="purple" />
@@ -349,7 +349,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 4 - Performance Cards */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <ServerStatCard icon={Server} label="Server Load" value="45%" progress={45} glowColor="purple" />
             <ServerStatCard icon={Database} label="DB Queries" value="1.2K/s" progress={60} glowColor="purple" />
             <ServerStatCard icon={Wifi} label="Bandwidth" value="890 MB/s" progress={35} glowColor="purple" />
@@ -358,7 +358,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 5 - Timeline */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <TimelineCard title="Activity Timeline" items={timelineItems} glowColor="purple" />
             <TimelineCard title="Recent Events" items={timelineItems.slice(0, 3)} glowColor="purple" />
             <TimelineCard title="Milestones" items={timelineItems.slice(2)} glowColor="purple" />
@@ -368,9 +368,9 @@ export default function DashboardPage() {
         </GlassTabsContent>
 
         {/* ==================== USERS TAB ==================== */}
-        <GlassTabsContent value="users" className="m-0 mt-0 space-y-6">
+        <GlassTabsContent value="users" className="m-0 mt-0 space-y-8">
           {/* Carousel 1 - User Stats */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <StatCard title="Total Users" value="12,453" change={{ value: 15.2, type: "increase" }} icon={<Users className="w-5 h-5" />} glowColor="green" />
             <StatCard title="Active Today" value="2,341" change={{ value: 8.7, type: "increase" }} glowColor="green" />
             <StatCard title="Verified" value="89%" change={{ value: 3.2, type: "increase" }} icon={<Shield className="w-5 h-5" />} glowColor="green" />
@@ -379,7 +379,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 2 - User Cards */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <UserCard name="Alice Johnson" role="Product Manager" avatar="" status="online" />
             <UserCard name="Bob Smith" role="Developer" avatar="" status="online" />
             <UserCard name="Carol Davis" role="Designer" avatar="" status="busy" />
@@ -388,7 +388,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 3 - Communication Stats */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <MiniStatCard icon={Mail} label="Emails Sent" value="1,234" trend="up" glowColor="green" />
             <MiniStatCard icon={MessageSquare} label="Messages" value="856" trend="up" glowColor="green" />
             <MiniStatCard icon={Bell} label="Notifications" value="45" glowColor="green" />
@@ -397,7 +397,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 4 - World Clocks */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <WorldClockWidget clocks={[{ city: "New York", timezone: "America/New_York", isDay: true }]} />
             <WorldClockWidget clocks={[{ city: "London", timezone: "Europe/London", isDay: false }]} />
             <WorldClockWidget clocks={[{ city: "Tokyo", timezone: "Asia/Tokyo", isDay: false }]} />
@@ -406,7 +406,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 5 - Activity Gauges */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <GaugeCard value={85} label="Active" colorScheme="green" />
             <GaugeCard value={72} label="Retention" colorScheme="green" />
             <GaugeCard value={94} label="Satisfaction" colorScheme="cyan" />
@@ -416,9 +416,9 @@ export default function DashboardPage() {
         </GlassTabsContent>
 
         {/* ==================== PROJECTS TAB ==================== */}
-        <GlassTabsContent value="projects" className="m-0 mt-0 space-y-6">
+        <GlassTabsContent value="projects" className="m-0 mt-0 space-y-8">
           {/* Carousel 1 - Project Stats */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <StatCard title="Active Projects" value="24" change={{ value: 12, type: "increase" }} glowColor="pink" />
             <StatCard title="In Progress" value="12" change={{ value: 8, type: "increase" }} glowColor="pink" />
             <StatCard title="Completed" value="156" change={{ value: 5, type: "increase" }} glowColor="pink" />
@@ -427,7 +427,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 2 - Project Cards */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <ProjectCard name="Website Redesign" progress={75} team={5} status="Active" />
             <ProjectCard name="Mobile App" progress={45} team={8} status="In Progress" />
             <ProjectCard name="API Integration" progress={90} team={3} status="Review" />
@@ -436,7 +436,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 3 - Calendar Widgets */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <EventsCalendarWidget events={todayEvents} />
             <CalendarWidget />
             <CompactCalendarWidget />
@@ -451,7 +451,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 4 - Task Stats */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <MiniStatCard icon={CheckCircle2} label="Completed" value="89" trend="up" glowColor="pink" />
             <MiniStatCard icon={Clock} label="Pending" value="34" glowColor="pink" />
             <MiniStatCard icon={AlertCircle} label="Overdue" value="5" trend="down" glowColor="pink" />
@@ -460,7 +460,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 5 - Progress Gauges */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <GaugeCard value={75} label="Design" colorScheme="purple" />
             <GaugeCard value={60} label="Dev" colorScheme="purple" />
             <GaugeCard value={85} label="Testing" colorScheme="purple" />
@@ -470,9 +470,9 @@ export default function DashboardPage() {
         </GlassTabsContent>
 
         {/* ==================== SETTINGS TAB ==================== */}
-        <GlassTabsContent value="settings" className="m-0 mt-0 space-y-6">
+        <GlassTabsContent value="settings" className="m-0 mt-0 space-y-8">
           {/* Carousel 1 - System Stats */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <MetricStat label="Storage Used" value={45.2} max={100} unit="GB" glowColor="blue" />
             <MetricStat label="Memory" value={7.8} max={16} unit="GB" glowColor="blue" />
             <CircularProgressStat label="Uptime" value={99.9} max={100} unit="%" glowColor="blue" size="md" />
@@ -481,7 +481,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 2 - System Health */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <SystemStatusCard icon={Server} label="Server Status" status="success" statusText="Healthy" glowColor="blue" />
             <SystemStatusCard icon={Database} label="Database" status="success" statusText="Connected" glowColor="blue" />
             <SystemStatusCard icon={Shield} label="Security" status="success" statusText="Protected" glowColor="blue" />
@@ -490,7 +490,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 3 - Weather in Settings */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <WeatherWidget temperature={28} condition="Partly Cloudy" icon="cloud" location="Server Room" />
             <CurrentWeatherWidget location="Data Center" temperature={22} condition="cloudy" humidity={35} windSpeed={5} />
             <DetailedWeatherWidget temperature={25} condition="Clear" humidity={40} windSpeed={3} location="HQ" />
@@ -499,7 +499,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 4 - Quick Actions */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <QuickActionCard icon={Clock} label="Schedule" colorClass="bg-blue-500/20" glowColor="blue" />
             <QuickActionCard icon={Bell} label="Alerts" colorClass="bg-indigo-500/20" glowColor="purple" />
             <QuickActionCard icon={Shield} label="Security" colorClass="bg-violet-500/20" glowColor="purple" />
@@ -508,7 +508,7 @@ export default function DashboardPage() {
           </WidgetCarousel>
 
           {/* Carousel 5 - System Gauges */}
-          <WidgetCarousel className="w-full max-w-sm mx-auto">
+          <WidgetCarousel className="w-full" gap="md">
             <GaugeCard value={55} label="CPU" colorScheme="cyan" />
             <GaugeCard value={70} label="RAM" colorScheme="cyan" />
             <GaugeCard value={40} label="Disk" colorScheme="purple" />
