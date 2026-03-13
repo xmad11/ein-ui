@@ -9,17 +9,16 @@ import {
   BarChart3,
   Activity,
   TrendingUp,
-  UserPlus,
   Shield,
-  Database,
-  Cpu,
-  HardDrive,
-  Wifi,
-  Clock,
-  Bell,
 } from "lucide-react";
 import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/registry/liquid-glass/glass-tabs";
-import { WidgetCarousel } from "@/components/carousel/WidgetCarousel";
+
+// Widgets
+import { StockTickerWidget, MarketOverviewWidget, CryptoWidget } from "@/registry/widgets/stock-widget";
+import { WeatherWidget, CurrentWeatherWidget, ForecastWidget } from "@/registry/widgets/weather-widget";
+import { DigitalClockWidget, AnalogClockWidget, WorldClockWidget, StopwatchWidget, TimerWidget } from "@/registry/widgets/clock-widget";
+import { StatCard, MetricStat, ComparisonStat, CircularProgressStat } from "@/registry/widgets/stats-widget";
+import { CalendarWidget, CompactCalendarWidget, EventsCalendarWidget } from "@/registry/widgets/calendar-widget";
 
 const tabs = [
   { value: "dashboard", icon: LayoutDashboard, label: "Dashboard", bg: "tab-bg-ocean" },
@@ -29,91 +28,35 @@ const tabs = [
   { value: "settings", icon: Settings, label: "Settings", bg: "tab-bg-midnight" },
 ];
 
-const glowClasses = {
-  cyan: "widget-glow-cyan",
-  purple: "widget-glow-purple",
-  blue: "widget-glow-blue",
-  pink: "widget-glow-pink",
-  green: "widget-glow-green",
-};
-
-const iconColors = {
-  cyan: "text-cyan-400",
-  purple: "text-purple-400",
-  blue: "text-blue-400",
-  pink: "text-pink-400",
-  green: "text-emerald-400",
-};
-
-// Dashboard widgets - Ocean theme (Cyan+Blue)
-const dashboardWidgets = [
-  { icon: Activity, title: "Active Sessions", value: "1,234", change: "+12%" },
-  { icon: TrendingUp, title: "Revenue", value: "$45.2K", change: "+8.3%" },
-  { icon: UserPlus, title: "New Users", value: "89", change: "+24%" },
-  { icon: Shield, title: "Security Score", value: "98%", change: "+2%" },
+// Weather forecast data
+const forecastData = [
+  { day: "Mon", high: 31, low: 24, condition: "sunny" as const },
+  { day: "Tue", high: 29, low: 23, condition: "cloudy" as const },
+  { day: "Wed", high: 27, low: 22, condition: "rainy" as const },
+  { day: "Thu", high: 30, low: 24, condition: "sunny" as const },
+  { day: "Fri", high: 32, low: 25, condition: "sunny" as const },
 ];
 
-// Analytics widgets - Aurora theme (Purple+Pink)
-const analyticsWidgets = [
-  { icon: BarChart3, title: "Page Views", value: "45.2K", change: "+18%" },
-  { icon: TrendingUp, title: "Conversion Rate", value: "3.2%", change: "+0.5%" },
-  { icon: Activity, title: "Bounce Rate", value: "32%", change: "-4%" },
-  { icon: Clock, title: "Avg. Session", value: "4m 32s", change: "+12s" },
+// Market indices data
+const marketIndices = [
+  { name: "S&P 500", value: 5234.50, change: 45.20, changePercent: 0.87 },
+  { name: "NASDAQ", value: 16428.82, change: -12.34, changePercent: -0.08 },
+  { name: "DOW", value: 39127.14, change: 156.33, changePercent: 0.40 },
 ];
 
-// Users widgets - Forest theme (Emerald+Teal)
-const usersWidgets = [
-  { icon: Users, title: "Total Users", value: "12,453", change: "+156" },
-  { icon: UserPlus, title: "Active Today", value: "2,341", change: "+89" },
-  { icon: Shield, title: "Verified", value: "89%", change: "+3%" },
-  { icon: Bell, title: "Pending Reviews", value: "23", change: "-5" },
+// Calendar events
+const todayEvents = [
+  { id: "1", title: "Team Standup", time: "09:00 AM", color: "bg-cyan-500" },
+  { id: "2", title: "Design Review", time: "02:00 PM", color: "bg-purple-500" },
+  { id: "3", title: "Client Call", time: "04:30 PM", color: "bg-amber-500" },
 ];
 
-// Projects widgets - Sunset theme (Pink+Amber)
-const projectsWidgets = [
-  { icon: FolderKanban, title: "Active Projects", value: "24", change: "+3" },
-  { icon: Cpu, title: "In Progress", value: "12", change: "+2" },
-  { icon: HardDrive, title: "Completed", value: "156", change: "+8" },
-  { icon: Clock, title: "Due This Week", value: "5", change: "-2" },
+// World clocks
+const worldClocks = [
+  { city: "New York", timezone: "America/New_York", isDay: true },
+  { city: "London", timezone: "Europe/London", isDay: false },
+  { city: "Tokyo", timezone: "Asia/Tokyo", isDay: false },
 ];
-
-// Settings widgets - Midnight theme (Blue+Indigo)
-const settingsWidgets = [
-  { icon: Database, title: "Storage Used", value: "45.2 GB", change: "+2.1 GB" },
-  { icon: Cpu, title: "API Calls", value: "1.2M", change: "+120K" },
-  { icon: Wifi, title: "Uptime", value: "99.9%", change: "0%" },
-  { icon: Shield, title: "Last Backup", value: "2h ago", change: "On schedule" },
-];
-
-interface WidgetCardProps {
-  icon: React.ElementType;
-  title: string;
-  value: string;
-  change: string;
-  glowColor: "cyan" | "purple" | "blue" | "pink" | "green";
-}
-
-function WidgetCard({ icon: Icon, title, value, change, glowColor }: WidgetCardProps) {
-  const isPositive = change.startsWith("+");
-  const isNegative = change.startsWith("-");
-
-  return (
-    <div className={`w-full rounded-2xl backdrop-blur-xl p-4 ${glowClasses[glowColor]}`}>
-      <div className="flex items-center justify-between mb-3">
-        <Icon className={`h-5 w-5 ${iconColors[glowColor]}`} />
-        <span
-          className={`text-xs font-medium ${
-            isPositive ? "text-emerald-400" : isNegative ? "text-rose-400" : "text-white/50"
-          }`}
-        >
-          {change}
-        </span>
-      </div>
-      <div className="text-2xl font-bold text-white mb-1">{value}</div>
-      <div className="text-sm text-white/60">{title}</div>
-    </div>
-  );
-}
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -129,75 +72,202 @@ export default function DashboardPage() {
       {/* Background grid */}
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      {/* Tab Content - Fills available space */}
+      {/* Tab Content */}
       <div className="flex-1 relative z-10 overflow-auto p-6">
+        {/* Dashboard Tab - Ocean Theme */}
         <GlassTabsContent value="dashboard" className="h-full m-0 mt-0">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Dashboard Overview</h2>
-              <p className="text-white/60">Monitor your system performance and key metrics</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <DigitalClockWidget showSeconds={false} className="col-span-1" />
+              <CurrentWeatherWidget
+                location="San Francisco"
+                temperature={24}
+                feelsLike={26}
+                high={28}
+                low={18}
+                condition="sunny"
+                humidity={45}
+                windSpeed={12}
+                className="col-span-1 md:col-span-2 lg:col-span-1"
+              />
+              <ForecastWidget forecast={forecastData} className="col-span-1" />
+              <StatCard
+                title="Active Users"
+                value="2,847"
+                change={{ value: 12.5, type: "increase" }}
+                icon={<Activity className="w-5 h-5" />}
+                glowColor="cyan"
+              />
+              <StatCard
+                title="Revenue"
+                value="$45.2K"
+                change={{ value: 8.3, type: "increase" }}
+                icon={<TrendingUp className="w-5 h-5" />}
+                glowColor="cyan"
+              />
+              <CircularProgressStat
+                label="CPU Usage"
+                value={67}
+                max={100}
+                unit="%"
+                glowColor="cyan"
+                size="sm"
+              />
             </div>
-            <WidgetCarousel>
-              {dashboardWidgets.map((widget, index) => (
-                <WidgetCard key={index} {...widget} glowColor="cyan" />
-              ))}
-            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
+        {/* Analytics Tab - Aurora Theme */}
         <GlassTabsContent value="analytics" className="h-full m-0 mt-0">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Analytics</h2>
-              <p className="text-white/60">Track your performance and growth metrics</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <StockTickerWidget
+                symbol="AAPL"
+                name="Apple Inc."
+                price={198.45}
+                change={2.34}
+                changePercent={1.19}
+                chartData={[190, 192, 188, 195, 193, 197, 198]}
+                className="col-span-1"
+              />
+              <MarketOverviewWidget indices={marketIndices} className="col-span-1 md:col-span-2 lg:col-span-1" />
+              <CryptoWidget
+                symbol="BTC"
+                name="Bitcoin"
+                price={67234}
+                change24h={2.45}
+                marketCap="$1.32T"
+                volume24h="$28.5B"
+                className="col-span-1"
+              />
+              <ComparisonStat
+                title="Page Views"
+                current={45234}
+                previous={38210}
+                format={(v) => v.toLocaleString()}
+                glowColor="purple"
+              />
+              <ComparisonStat
+                title="Conversions"
+                current={1247}
+                previous={1069}
+                format={(v) => v.toLocaleString()}
+                glowColor="purple"
+              />
+              <MetricStat
+                label="Bounce Rate"
+                value={32}
+                max={100}
+                unit="%"
+                glowColor="purple"
+              />
             </div>
-            <WidgetCarousel>
-              {analyticsWidgets.map((widget, index) => (
-                <WidgetCard key={index} {...widget} glowColor="purple" />
-              ))}
-            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
+        {/* Users Tab - Forest Theme */}
         <GlassTabsContent value="users" className="h-full m-0 mt-0">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Users</h2>
-              <p className="text-white/60">Manage your team and user accounts</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <StatCard
+                title="Total Users"
+                value="12,453"
+                change={{ value: 15.2, type: "increase" }}
+                icon={<Users className="w-5 h-5" />}
+                glowColor="green"
+              />
+              <StatCard
+                title="Active Today"
+                value="2,341"
+                change={{ value: 8.7, type: "increase" }}
+                glowColor="green"
+              />
+              <StatCard
+                title="Verified"
+                value="89%"
+                change={{ value: 3.2, type: "increase" }}
+                icon={<Shield className="w-5 h-5" />}
+                glowColor="green"
+              />
+              <WorldClockWidget clocks={worldClocks} className="col-span-1 md:col-span-2 lg:col-span-1" />
+              <AnalogClockWidget size="md" className="col-span-1" />
+              <MetricStat
+                label="Memory Usage"
+                value={7.8}
+                max={16}
+                unit="GB"
+                glowColor="green"
+                className="col-span-1"
+              />
             </div>
-            <WidgetCarousel>
-              {usersWidgets.map((widget, index) => (
-                <WidgetCard key={index} {...widget} glowColor="green" />
-              ))}
-            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
+        {/* Projects Tab - Sunset Theme */}
         <GlassTabsContent value="projects" className="h-full m-0 mt-0">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Projects</h2>
-              <p className="text-white/60">View and manage your active projects</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <StatCard
+                title="Active Projects"
+                value="24"
+                change={{ value: 12, type: "increase" }}
+                glowColor="pink"
+              />
+              <StatCard
+                title="In Progress"
+                value="12"
+                change={{ value: 8, type: "increase" }}
+                glowColor="pink"
+              />
+              <StatCard
+                title="Completed"
+                value="156"
+                change={{ value: 5, type: "increase" }}
+                glowColor="pink"
+              />
+              <EventsCalendarWidget events={todayEvents} className="col-span-1 md:col-span-2 lg:col-span-1" />
+              <CalendarWidget className="col-span-1 md:col-span-2 lg:col-span-1" />
+              <CompactCalendarWidget className="col-span-1" />
             </div>
-            <WidgetCarousel>
-              {projectsWidgets.map((widget, index) => (
-                <WidgetCard key={index} {...widget} glowColor="pink" />
-              ))}
-            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
+        {/* Settings Tab - Midnight Theme */}
         <GlassTabsContent value="settings" className="h-full m-0 mt-0">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Settings</h2>
-              <p className="text-white/60">Configure your preferences and system options</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <MetricStat
+                label="Storage Used"
+                value={45.2}
+                max={100}
+                unit="GB"
+                glowColor="blue"
+              />
+              <MetricStat
+                label="Memory"
+                value={7.8}
+                max={16}
+                unit="GB"
+                glowColor="blue"
+              />
+              <CircularProgressStat
+                label="Uptime"
+                value={99.9}
+                max={100}
+                unit="%"
+                glowColor="blue"
+                size="sm"
+              />
+              <StopwatchWidget className="col-span-1" />
+              <TimerWidget initialMinutes={5} className="col-span-1" />
+              <WeatherWidget
+                temperature={28}
+                condition="Partly Cloudy"
+                icon="cloud"
+                location="Local"
+                className="col-span-1"
+              />
             </div>
-            <WidgetCarousel>
-              {settingsWidgets.map((widget, index) => (
-                <WidgetCard key={index} {...widget} glowColor="blue" />
-              ))}
-            </WidgetCarousel>
           </div>
         </GlassTabsContent>
       </div>
