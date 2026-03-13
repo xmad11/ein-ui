@@ -279,10 +279,12 @@ export default function DashboardPage() {
             <GlassTabsTrigger
               key={tab.value}
               value={tab.value}
-              className="p-3"
-              title={tab.label}
+              className="group p-3"
             >
-              <tab.icon className="h-5 w-5" />
+              <tab.icon className="h-4 w-4" />
+              <span className="ml-2 hidden group-data-[state=active]:inline">
+                {tab.label}
+              </span>
             </GlassTabsTrigger>
           ))}
         </GlassTabsList>
