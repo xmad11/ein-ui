@@ -7,12 +7,12 @@ FROM oven/bun:1 AS dependencies
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy package file
+COPY package.json ./
 
 # Install dependencies with caching
 RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile
+    bun install
 
 # =========================================
 # Stage 2: Builder
@@ -44,12 +44,12 @@ ENV NODE_ENV=production
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy package file
+COPY package.json ./
 
 # Install production dependencies only
 RUN --mount=type=cache,target=/root/.bun/install/cache \
-    bun install --frozen-lockfile --production
+    bun install --production
 
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/.next ./.next
