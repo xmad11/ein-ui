@@ -83,10 +83,10 @@ const worldClocks = [
 ];
 
 const timelineItems = [
-  { title: "Project Started", description: "Initial commit", date: "2024-01-15", icon: Calendar },
-  { title: "Milestone 1", description: "Core features complete", date: "2024-02-01", icon: CheckCircle2 },
-  { title: "Beta Release", description: "Testing phase", date: "2024-03-01", icon: Zap },
-  { title: "Launch", description: "Public release", date: "2024-04-01", icon: Star },
+  { id: "1", title: "Project Started", description: "Initial commit", date: "2024-01-15", icon: <Calendar className="w-4 h-4" /> },
+  { id: "2", title: "Milestone 1", description: "Core features complete", date: "2024-02-01", icon: <CheckCircle2 className="w-4 h-4" /> },
+  { id: "3", title: "Beta Release", description: "Testing phase", date: "2024-03-01", icon: <Zap className="w-4 h-4" /> },
+  { id: "4", title: "Launch", description: "Public release", date: "2024-04-01", icon: <Star className="w-4 h-4" /> },
 ];
 
 const portfolioHoldings = [
@@ -135,7 +135,7 @@ function UserCard({ name, role, avatar, status }: { name: string; role: string; 
         <div className="text-white font-medium truncate">{name}</div>
         <div className="text-white/50 text-sm truncate">{role}</div>
       </div>
-      <GlassBadge variant={status === "online" ? "success" : "secondary"}>{status}</GlassBadge>
+      <GlassBadge variant={status === "online" ? "success" : "outline"}>{status}</GlassBadge>
     </GlassCard>
   );
 }
@@ -211,11 +211,11 @@ export default function DashboardPage() {
 
           {/* Carousel 5 - Gauges */}
           <WidgetCarousel className="w-full max-w-md mx-auto">
-            <GlassMorphCard className="p-6"><GlassGauge value={75} label="CPU" unit="%" color="cyan" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={45} label="Memory" unit="%" color="emerald" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={90} label="Disk" unit="%" color="purple" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={30} label="Network" unit="%" color="blue" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={60} label="Battery" unit="%" color="amber" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={75} label="CPU" colorScheme="cyan" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={45} label="Memory" colorScheme="green" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={90} label="Disk" colorScheme="purple" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={30} label="Network" colorScheme="cyan" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={60} label="Battery" colorScheme="orange" /></GlassMorphCard>
           </WidgetCarousel>
         </GlassTabsContent>
 
@@ -307,11 +307,11 @@ export default function DashboardPage() {
 
           {/* Carousel 5 - Activity Gauges */}
           <WidgetCarousel className="w-full max-w-md mx-auto">
-            <GlassMorphCard className="p-6"><GlassGauge value={85} label="Active" unit="%" color="emerald" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={72} label="Retention" unit="%" color="green" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={94} label="Satisfaction" unit="%" color="teal" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={68} label="Growth" unit="%" color="lime" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={91} label="Quality" unit="%" color="cyan" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={85} label="Active" colorScheme="green" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={72} label="Retention" colorScheme="green" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={94} label="Satisfaction" colorScheme="cyan" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={68} label="Growth" colorScheme="green" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={91} label="Quality" colorScheme="cyan" /></GlassMorphCard>
           </WidgetCarousel>
         </GlassTabsContent>
 
@@ -355,11 +355,11 @@ export default function DashboardPage() {
 
           {/* Carousel 5 - Progress Gauges */}
           <WidgetCarousel className="w-full max-w-md mx-auto">
-            <GlassMorphCard className="p-6"><GlassGauge value={75} label="Design" unit="%" color="pink" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={60} label="Dev" unit="%" color="rose" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={85} label="Testing" unit="%" color="fuchsia" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={40} label="Deploy" unit="%" color="violet" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={92} label="Quality" unit="%" color="magenta" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={75} label="Design" colorScheme="purple" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={60} label="Dev" colorScheme="purple" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={85} label="Testing" colorScheme="purple" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={40} label="Deploy" colorScheme="purple" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={92} label="Quality" colorScheme="purple" /></GlassMorphCard>
           </WidgetCarousel>
         </GlassTabsContent>
 
@@ -403,11 +403,11 @@ export default function DashboardPage() {
 
           {/* Carousel 5 - System Gauges */}
           <WidgetCarousel className="w-full max-w-md mx-auto">
-            <GlassMorphCard className="p-6"><GlassGauge value={55} label="CPU" unit="%" color="blue" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={70} label="RAM" unit="%" color="indigo" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={40} label="Disk" unit="%" color="violet" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={25} label="Network" unit="%" color="purple" /></GlassMorphCard>
-            <GlassMorphCard className="p-6"><GlassGauge value={88} label="Health" unit="%" color="cyan" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={55} label="CPU" colorScheme="cyan" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={70} label="RAM" colorScheme="cyan" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={40} label="Disk" colorScheme="purple" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={25} label="Network" colorScheme="purple" /></GlassMorphCard>
+            <GlassMorphCard className="p-6"><GlassGauge value={88} label="Health" colorScheme="cyan" /></GlassMorphCard>
           </WidgetCarousel>
         </GlassTabsContent>
       </div>
