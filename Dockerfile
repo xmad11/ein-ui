@@ -3,27 +3,23 @@
 # =========================================
 # Stage 1: Dependencies
 # =========================================
-FROM node:20-alpine AS dependencies
+FROM oven/bun:1 AS dependencies
 
 WORKDIR /app
 
 # Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 
 # Install dependencies with caching
-RUN --mount=type=cache,target=/root/.pnpm-store \
-    npm install -g pnpm && \
-    pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
 
 # =========================================
 # Stage 2: Builder
 # =========================================
-FROM node:20-alpine AS builder
+FROM oven/bun:1 AS builder
 
 WORKDIR /app
-
-# Install pnpm
-RUN npm install -g pnpm
 
 # Copy dependencies from previous stage
 COPY --from=dependencies /app/node_modules ./node_modules
@@ -32,32 +28,28 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 # Build the Next.js application
-RUN pnpm run build
+RUN bun run build
 
 # =========================================
 # Stage 3: Production
 # =========================================
-FROM node:20-alpine AS production
+FROM oven/bun:1 AS production
 
 WORKDIR /app
 
 # Set environment to production
 ENV NODE_ENV=production
 
-# Install pnpm
-RUN npm install -g pnpm
-
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
 
 # Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 
 # Install production dependencies only
-RUN --mount=type=cache,target=/root/.pnpm-store \
-    pnpm install --frozen-lockfile --prod && \
-    pnpm store prune
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile --production
 
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/.next ./.next
@@ -75,4 +67,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
 
 # Start the Next.js application
-CMD ["pnpm", "start"]
+CMD ["bun", "start"]
