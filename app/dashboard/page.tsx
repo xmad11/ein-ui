@@ -12,6 +12,7 @@ import {
   Shield,
 } from "lucide-react";
 import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/registry/liquid-glass/glass-tabs";
+import { WidgetCarousel } from "@/components/carousel/WidgetCarousel";
 
 // Widgets
 import { StockTickerWidget, MarketOverviewWidget, CryptoWidget } from "@/registry/widgets/stock-widget";
@@ -76,9 +77,9 @@ export default function DashboardPage() {
       <div className="flex-1 relative z-10 overflow-auto p-6">
         {/* Dashboard Tab - Ocean Theme */}
         <GlassTabsContent value="dashboard" className="h-full m-0 mt-0">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <DigitalClockWidget showSeconds={false} className="col-span-1" />
+          <div className="max-w-md mx-auto">
+            <WidgetCarousel className="w-full">
+              <DigitalClockWidget showSeconds={false} className="w-full" />
               <CurrentWeatherWidget
                 location="San Francisco"
                 temperature={24}
@@ -88,15 +89,16 @@ export default function DashboardPage() {
                 condition="sunny"
                 humidity={45}
                 windSpeed={12}
-                className="col-span-1 md:col-span-2 lg:col-span-1"
+                className="w-full"
               />
-              <ForecastWidget forecast={forecastData} className="col-span-1" />
+              <ForecastWidget forecast={forecastData} className="w-full" />
               <StatCard
                 title="Active Users"
                 value="2,847"
                 change={{ value: 12.5, type: "increase" }}
                 icon={<Activity className="w-5 h-5" />}
                 glowColor="cyan"
+                className="w-full"
               />
               <StatCard
                 title="Revenue"
@@ -104,6 +106,7 @@ export default function DashboardPage() {
                 change={{ value: 8.3, type: "increase" }}
                 icon={<TrendingUp className="w-5 h-5" />}
                 glowColor="cyan"
+                className="w-full"
               />
               <CircularProgressStat
                 label="CPU Usage"
@@ -112,15 +115,16 @@ export default function DashboardPage() {
                 unit="%"
                 glowColor="cyan"
                 size="sm"
+                className="w-full"
               />
-            </div>
+            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
         {/* Analytics Tab - Aurora Theme */}
         <GlassTabsContent value="analytics" className="h-full m-0 mt-0">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="max-w-md mx-auto">
+            <WidgetCarousel className="w-full">
               <StockTickerWidget
                 symbol="AAPL"
                 name="Apple Inc."
@@ -128,9 +132,9 @@ export default function DashboardPage() {
                 change={2.34}
                 changePercent={1.19}
                 chartData={[190, 192, 188, 195, 193, 197, 198]}
-                className="col-span-1"
+                className="w-full"
               />
-              <MarketOverviewWidget indices={marketIndices} className="col-span-1 md:col-span-2 lg:col-span-1" />
+              <MarketOverviewWidget indices={marketIndices} className="w-full" />
               <CryptoWidget
                 symbol="BTC"
                 name="Bitcoin"
@@ -138,7 +142,7 @@ export default function DashboardPage() {
                 change24h={2.45}
                 marketCap="$1.32T"
                 volume24h="$28.5B"
-                className="col-span-1"
+                className="w-full"
               />
               <ComparisonStat
                 title="Page Views"
@@ -146,6 +150,7 @@ export default function DashboardPage() {
                 previous={38210}
                 format={(v) => v.toLocaleString()}
                 glowColor="purple"
+                className="w-full"
               />
               <ComparisonStat
                 title="Conversions"
@@ -153,6 +158,7 @@ export default function DashboardPage() {
                 previous={1069}
                 format={(v) => v.toLocaleString()}
                 glowColor="purple"
+                className="w-full"
               />
               <MetricStat
                 label="Bounce Rate"
@@ -160,27 +166,30 @@ export default function DashboardPage() {
                 max={100}
                 unit="%"
                 glowColor="purple"
+                className="w-full"
               />
-            </div>
+            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
         {/* Users Tab - Forest Theme */}
         <GlassTabsContent value="users" className="h-full m-0 mt-0">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="max-w-md mx-auto">
+            <WidgetCarousel className="w-full">
               <StatCard
                 title="Total Users"
                 value="12,453"
                 change={{ value: 15.2, type: "increase" }}
                 icon={<Users className="w-5 h-5" />}
                 glowColor="green"
+                className="w-full"
               />
               <StatCard
                 title="Active Today"
                 value="2,341"
                 change={{ value: 8.7, type: "increase" }}
                 glowColor="green"
+                className="w-full"
               />
               <StatCard
                 title="Verified"
@@ -188,60 +197,65 @@ export default function DashboardPage() {
                 change={{ value: 3.2, type: "increase" }}
                 icon={<Shield className="w-5 h-5" />}
                 glowColor="green"
+                className="w-full"
               />
-              <WorldClockWidget clocks={worldClocks} className="col-span-1 md:col-span-2 lg:col-span-1" />
-              <AnalogClockWidget size="md" className="col-span-1" />
+              <WorldClockWidget clocks={worldClocks} className="w-full" />
+              <AnalogClockWidget size="md" className="w-full" />
               <MetricStat
                 label="Memory Usage"
                 value={7.8}
                 max={16}
                 unit="GB"
                 glowColor="green"
-                className="col-span-1"
+                className="w-full"
               />
-            </div>
+            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
         {/* Projects Tab - Sunset Theme */}
         <GlassTabsContent value="projects" className="h-full m-0 mt-0">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="max-w-md mx-auto">
+            <WidgetCarousel className="w-full">
               <StatCard
                 title="Active Projects"
                 value="24"
                 change={{ value: 12, type: "increase" }}
                 glowColor="pink"
+                className="w-full"
               />
               <StatCard
                 title="In Progress"
                 value="12"
                 change={{ value: 8, type: "increase" }}
                 glowColor="pink"
+                className="w-full"
               />
               <StatCard
                 title="Completed"
                 value="156"
                 change={{ value: 5, type: "increase" }}
                 glowColor="pink"
+                className="w-full"
               />
-              <EventsCalendarWidget events={todayEvents} className="col-span-1 md:col-span-2 lg:col-span-1" />
-              <CalendarWidget className="col-span-1 md:col-span-2 lg:col-span-1" />
-              <CompactCalendarWidget className="col-span-1" />
-            </div>
+              <EventsCalendarWidget events={todayEvents} className="w-full" />
+              <CalendarWidget className="w-full" />
+              <CompactCalendarWidget className="w-full" />
+            </WidgetCarousel>
           </div>
         </GlassTabsContent>
 
         {/* Settings Tab - Midnight Theme */}
         <GlassTabsContent value="settings" className="h-full m-0 mt-0">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="max-w-md mx-auto">
+            <WidgetCarousel className="w-full">
               <MetricStat
                 label="Storage Used"
                 value={45.2}
                 max={100}
                 unit="GB"
                 glowColor="blue"
+                className="w-full"
               />
               <MetricStat
                 label="Memory"
@@ -249,6 +263,7 @@ export default function DashboardPage() {
                 max={16}
                 unit="GB"
                 glowColor="blue"
+                className="w-full"
               />
               <CircularProgressStat
                 label="Uptime"
@@ -257,17 +272,18 @@ export default function DashboardPage() {
                 unit="%"
                 glowColor="blue"
                 size="sm"
+                className="w-full"
               />
-              <StopwatchWidget className="col-span-1" />
-              <TimerWidget initialMinutes={5} className="col-span-1" />
+              <StopwatchWidget className="w-full" />
+              <TimerWidget initialMinutes={5} className="w-full" />
               <WeatherWidget
                 temperature={28}
                 condition="Partly Cloudy"
                 icon="cloud"
                 location="Local"
-                className="col-span-1"
+                className="w-full"
               />
-            </div>
+            </WidgetCarousel>
           </div>
         </GlassTabsContent>
       </div>

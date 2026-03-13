@@ -1,7 +1,7 @@
 "use client"
 
 import useEmblaCarousel from "embla-carousel-react"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export interface WidgetCarouselProps {
   children: React.ReactNode[]
@@ -9,63 +9,34 @@ export interface WidgetCarouselProps {
 }
 
 export function WidgetCarousel({ children, className = "" }: WidgetCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    loop: true, 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
     align: "start",
     skipSnaps: false,
-    dragFree: true
+    dragFree: false,
+    containScroll: "trimSnaps",
   })
-  const [selectedIndex, setSelectedIndex] = useState(0)
-
-  const scrollTo = useCallback(
-    (index: number) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi]
-  )
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return
-    setSelectedIndex(emblaApi.selectedScrollSnap())
-  }, [emblaApi])
 
   useEffect(() => {
     if (!emblaApi) return
-    onSelect()
-    emblaApi.on("select", onSelect)
-    return () => {
-      emblaApi.off("select", onSelect)
-    }
-  }, [emblaApi, onSelect])
+    // Re-initialize on mount
+    emblaApi.reInit()
+  }, [emblaApi])
 
   return (
     <div className={`relative ${className}`}>
       {/* Carousel Container */}
       <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-4">
+        <div className="flex">
           {children.map((child, index) => (
-            <div 
-              key={index} 
-              className="flex-none w-full max-w-sm"
+            <div
+              key={index}
+              className="flex-[0_0_100%] min-w-0"
             >
               {child}
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Dot Indicators */}
-      <div className="flex justify-center gap-2 mt-4">
-        {children.map((_, index) => (
-          <button
-            key={index}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === selectedIndex
-                ? "bg-white w-4"
-                : "bg-white/30 hover:bg-white/50"
-            }`}
-            onClick={() => scrollTo(index)}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
       </div>
     </div>
   )
