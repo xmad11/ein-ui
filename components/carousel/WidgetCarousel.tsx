@@ -20,21 +20,19 @@ export function WidgetCarousel({ children, className = "", gap = "md" }: WidgetC
 
   useEffect(() => {
     if (!emblaApi) return
-    // Re-initialize on mount
     emblaApi.reInit()
   }, [emblaApi])
 
   const gapClasses = {
     none: "",
-    sm: "gap-2",
-    md: "gap-4",
-    lg: "gap-6",
+    sm: "gap-3",
+    md: "gap-6",
+    lg: "gap-8",
   }
 
   return (
-    <div className={`relative ${className}`}>
-      {/* Carousel Container */}
-      <div className="overflow-hidden" ref={emblaRef}>
+    <div className={`relative max-w-6xl mx-auto ${className}`}>
+      <div className="overflow-hidden px-2" ref={emblaRef}>
         <div className={`flex ${gapClasses[gap]}`}>
           {children.map((child, index) => (
             <div
