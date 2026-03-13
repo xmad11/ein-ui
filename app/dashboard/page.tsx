@@ -22,22 +22,22 @@ import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/
 import { WidgetCarousel } from "@/components/carousel/WidgetCarousel";
 
 const tabs = [
-  { value: "analytics", icon: BarChart3, label: "Analytics", glow: "purple" as const },
-  { value: "users", icon: Users, label: "Users", glow: "blue" as const },
-  { value: "dashboard", icon: LayoutDashboard, label: "Dashboard", glow: "cyan" as const },
-  { value: "projects", icon: FolderKanban, label: "Projects", glow: "pink" as const },
-  { value: "settings", icon: Settings, label: "Settings", glow: "green" as const },
+  { value: "analytics", icon: BarChart3, label: "Analytics" },
+  { value: "users", icon: Users, label: "Users" },
+  { value: "dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { value: "projects", icon: FolderKanban, label: "Projects" },
+  { value: "settings", icon: Settings, label: "Settings" },
 ];
 
-const glowColors = {
-  cyan: "from-cyan-500/20 to-blue-500/20 border-cyan-500/30",
-  purple: "from-purple-500/20 to-pink-500/20 border-purple-500/30",
-  blue: "from-blue-500/20 to-indigo-500/20 border-blue-500/30",
-  pink: "from-pink-500/20 to-rose-500/20 border-pink-500/30",
-  green: "from-emerald-500/20 to-teal-500/20 border-emerald-500/30",
+const glowClasses = {
+  cyan: "widget-glow-cyan",
+  purple: "widget-glow-purple",
+  blue: "widget-glow-blue",
+  pink: "widget-glow-pink",
+  green: "widget-glow-green",
 };
 
-const glowTextColors = {
+const iconColors = {
   cyan: "text-cyan-400",
   purple: "text-purple-400",
   blue: "text-blue-400",
@@ -99,10 +99,10 @@ function WidgetCard({ icon: Icon, title, value, change, glowColor }: WidgetCardP
 
   return (
     <div
-      className={`w-full rounded-2xl border bg-gradient-to-br backdrop-blur-xl p-4 ${glowColors[glowColor]}`}
+      className={`w-full rounded-2xl backdrop-blur-xl p-4 ${glowClasses[glowColor]}`}
     >
       <div className="flex items-center justify-between mb-3">
-        <Icon className={`h-5 w-5 ${glowTextColors[glowColor]}`} />
+        <Icon className={`h-5 w-5 ${iconColors[glowColor]}`} />
         <span
           className={`text-xs font-medium ${
             isPositive ? "text-emerald-400" : isNegative ? "text-rose-400" : "text-white/50"
@@ -120,31 +120,11 @@ function WidgetCard({ icon: Icon, title, value, change, glowColor }: WidgetCardP
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  const currentTab = tabs.find((t) => t.value === activeTab);
-  const glowColor = currentTab?.glow || "cyan";
-
-  const getWidgets = () => {
-    switch (activeTab) {
-      case "dashboard":
-        return dashboardWidgets;
-      case "analytics":
-        return analyticsWidgets;
-      case "users":
-        return usersWidgets;
-      case "projects":
-        return projectsWidgets;
-      case "settings":
-        return settingsWidgets;
-      default:
-        return dashboardWidgets;
-    }
-  };
-
   return (
     <GlassTabs
       value={activeTab}
       onValueChange={setActiveTab}
-      className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pt-16 flex flex-col"
+      className="min-h-screen bg-background pt-16 flex flex-col"
     >
       {/* Background grid */}
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
@@ -223,7 +203,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Floating Tab Bar - Bottom */}
-      <div className="sticky bottom-0 z-20 flex justify-center pb-6 pt-4 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent">
+      <div className="sticky bottom-0 z-20 flex justify-center pb-6 pt-4">
         <GlassTabsList className="flex items-center justify-center gap-1 px-2">
           {tabs.map((tab) => (
             <GlassTabsTrigger key={tab.value} value={tab.value} className="p-3" title={tab.label}>
