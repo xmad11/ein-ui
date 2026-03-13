@@ -27,6 +27,9 @@ export default function DashboardPage() {
       onValueChange={setActiveTab}
       className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pt-16 flex flex-col"
     >
+      {/* Background grid */}
+      <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+
       {/* Tab Content - Fills available space */}
       <div className="flex-1 relative z-10 overflow-auto">
         <GlassTabsContent value="dashboard" className="h-full m-0 mt-0">
