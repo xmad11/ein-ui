@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import useEmblaCarousel from "embla-carousel-react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 
 export interface WidgetCarouselProps {
@@ -25,7 +26,15 @@ export function WidgetCarousel({
   itemsPerView = { base: 1, sm: 2, lg: 3, xl: 4 }
 }: WidgetCarouselProps) {
   const [currentItemsPerView, setCurrentItemsPerView] = useState(itemsPerView.base ?? 1)
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  // Embla carousel with proper snap behavior
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    align: "start",
+    skipSnaps: false,
+    dragFree: false,
+    containScroll: "trimSnaps",
+  })
 
   // Gap sizes in pixels
   const gapSizes = {
@@ -57,31 +66,33 @@ export function WidgetCarousel({
     return () => window.removeEventListener("resize", updateItemsPerView)
   }, [itemsPerView])
 
+  // Re-initialize Embla when items per view changes
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.reInit()
+    }
+  }, [currentItemsPerView, emblaApi])
+
   const gapPx = gapSizes[gap]
+  const gapClass = gap === "none" ? "" : `gap-${gap === "xs" ? "2" : gap === "sm" ? "3" : "4"}`
 
   // Calculate item width: (100% - gaps) / itemsPerView
+  // Example: 4 items with 12px gap = (100% - 36px) / 4
   const totalGapPx = gapPx * (currentItemsPerView - 1)
 
   return (
-    <div className={cn("w-full", className)}>
-      {/* Horizontal scroll container with snap scrolling */}
+    <div className={cn("w-full select-none", className)}>
       <div
-        ref={scrollContainerRef}
-        className="overflow-x-auto overflow-y-hidden scrollbar-hide"
-        style={{
-          scrollSnapType: "x mandatory",
-          scrollBehavior: "smooth",
-          WebkitOverflowScrolling: "touch",
-        }}
+        className="overflow-hidden"
+        ref={emblaRef}
       >
-        <div className="flex" style={{ gap: `${gapPx}px` }}>
+        <div className={cn("flex", gapClass)}>
           {children.map((child, index) => (
             <div
               key={index}
-              className="flex-shrink-0 flex-grow-0"
+              className="flex-shrink-0 flex-grow-0 min-w-0"
               style={{
                 width: `calc((100% - ${totalGapPx}px) / ${currentItemsPerView})`,
-                minWidth: `calc((100% - ${totalGapPx}px) / ${currentItemsPerView})`,
               }}
             >
               {child}
