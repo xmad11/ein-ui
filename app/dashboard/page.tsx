@@ -290,12 +290,12 @@ export default function DashboardPage() {
     <GlassTabs
       value={activeTab}
       onValueChange={setActiveTab}
-      className={`min-h-screen ${currentTab?.bg || "bg-background"} pt-16 flex flex-col transition-all duration-500`}
+      className={`h-screen ${currentTab?.bg || "bg-background"} pt-16 flex flex-col transition-all duration-500`}
     >
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      {/* Content area - prevent horizontal scroll on page, only vertical */}
-      <div className="flex-1 relative z-10 overflow-x-hidden overflow-y-auto px-3 py-4 md:px-4 lg:px-6">
+      {/* Content area - scrollable vertically, no horizontal scroll */}
+      <div className="flex-1 relative z-10 overflow-y-auto overflow-x-hidden px-3 py-4 md:px-4 lg:px-6 pb-24">
 
         {/* ==================== OVERVIEW TAB ==================== */}
         <GlassTabsContent value="overview" className="m-0 mt-0">

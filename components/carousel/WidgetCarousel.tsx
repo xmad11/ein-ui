@@ -1,13 +1,13 @@
 "use client"
 
 import useEmblaCarousel from "embla-carousel-react"
-import { useEffect, useCallback, useState } from "react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 
 export interface WidgetCarouselProps {
   children: React.ReactNode[]
   className?: string
-  /** Gap between items - default is 12px (3) */
+  /** Gap between items - default is 12px (sm) */
   gap?: "none" | "xs" | "sm" | "md"
   /** Number of items to show at different breakpoints */
   itemsPerView?: {
@@ -29,12 +29,20 @@ export function WidgetCarousel({
 
   // Embla carousel with proper snap behavior
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: false, // No loop for cleaner snap behavior
+    loop: false,
     align: "start",
-    skipSnaps: false, // Ensure we snap to each item
-    dragFree: false, // Disable free dragging
-    containScroll: "keepSnaps", // Keep all snaps
+    skipSnaps: false,
+    dragFree: false,
+    containScroll: "trimSnaps",
   })
+
+  // Gap sizes in pixels
+  const gapSizes = {
+    none: 0,
+    xs: 8,
+    sm: 12,
+    md: 16,
+  }
 
   // Handle responsive items per view
   useEffect(() => {
@@ -65,34 +73,27 @@ export function WidgetCarousel({
     }
   }, [currentItemsPerView, emblaApi])
 
-  // Gap classes - using smaller values
-  const gapClasses = {
-    none: "gap-0",
-    xs: "gap-2",   // 8px
-    sm: "gap-3",   // 12px
-    md: "gap-4",   // 16px
-  }
+  const gapPx = gapSizes[gap]
+  const gapClass = gap === "none" ? "" : `gap-${gap === "xs" ? "2" : gap === "sm" ? "3" : "4"}`
 
-  // Calculate item width percentage
-  const itemWidthPercent = 100 / currentItemsPerView
+  // Calculate item width: (100% - gaps) / itemsPerView
+  // Example: 4 items with 12px gap = (100% - 36px) / 4
+  const totalGapPx = gapPx * (currentItemsPerView - 1)
 
   return (
     <div className={cn("w-full select-none", className)}>
-      {/* Overflow container - prevents horizontal page scroll */}
       <div
         className="overflow-hidden"
         ref={emblaRef}
-        style={{ touchAction: "pan-x" }} // Only allow horizontal touch
+        style={{ touchAction: "pan-x" }}
       >
-        {/* Flex container with gap */}
-        <div className={cn("flex", gapClasses[gap])}>
+        <div className={cn("flex", gapClass)}>
           {children.map((child, index) => (
             <div
               key={index}
-              className="flex-shrink-0 flex-grow-0"
+              className="flex-shrink-0 flex-grow-0 min-w-0"
               style={{
-                flex: `0 0 ${itemWidthPercent}%`,
-                maxWidth: `${itemWidthPercent}%`,
+                width: `calc((100% - ${totalGapPx}px) / ${currentItemsPerView})`,
               }}
             >
               {child}
