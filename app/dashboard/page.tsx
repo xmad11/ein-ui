@@ -405,6 +405,8 @@ export default function DashboardPage() {
 
         {/* ==================== AI CHAT TAB ==================== */}
         <GlassTabsContent value="chat" className="m-0 mt-0">
+
+          {/* Carousel 1 - Chat Stats */}
           <div className="mb-4">
             <WidgetCarousel
               gap="sm"
@@ -440,6 +442,7 @@ export default function DashboardPage() {
             </WidgetCarousel>
           </div>
 
+          {/* Carousel 2 - Model Usage */}
           <div className="mb-4">
             <WidgetCarousel
               gap="sm"
@@ -469,6 +472,8 @@ export default function DashboardPage() {
 
         {/* ==================== MEMORY TAB ==================== */}
         <GlassTabsContent value="memory" className="m-0 mt-0">
+
+          {/* Carousel 1 - Memory Stats */}
           <div className="mb-4">
             <WidgetCarousel
               gap="sm"
@@ -503,7 +508,7 @@ export default function DashboardPage() {
             </WidgetCarousel>
           </div>
 
-          {/* Memory Files Grid */}
+          {/* Carousel 2 - Memory Files */}
           <div className="mb-4">
             <WidgetCarousel
               gap="sm"
