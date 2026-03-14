@@ -404,401 +404,415 @@ export default function DashboardPage() {
         </GlassTabsContent>
 
         {/* ==================== AI CHAT TAB ==================== */}
-        <GlassTabsContent value="chat" className="m-0 mt-0 space-y-6">
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <StatCard
-              title="Messages Today"
-              value="1,247"
-              change={{ value: 15, type: "increase" }}
-              icon={<MessageSquare className="w-5 h-5" />}
-              glowColor="purple"
-            />
-            <StatCard
-              title="Tokens Used"
-              value="845K"
-              change={{ value: 23, type: "increase" }}
-              glowColor="purple"
-            />
-            <CircularProgressStat
-              label="API Quota"
-              value={67}
-              max={100}
-              unit="%"
-              glowColor="purple"
-              size="md"
-            />
-            <MetricStat
-              label="Avg Response"
-              value={1.2}
-              unit="s"
-              glowColor="cyan"
-            />
-          </WidgetCarousel>
+        <GlassTabsContent value="chat" className="m-0 mt-0">
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <StatCard
+                title="Messages Today"
+                value="1,247"
+                change={{ value: 15, type: "increase" }}
+                icon={<MessageSquare className="w-5 h-5" />}
+                glowColor="purple"
+              />
+              <StatCard
+                title="Tokens Used"
+                value="845K"
+                change={{ value: 23, type: "increase" }}
+                glowColor="purple"
+              />
+              <CircularProgressStat
+                label="API Quota"
+                value={67}
+                max={100}
+                unit="%"
+                glowColor="purple"
+                size="md"
+              />
+              <MetricStat
+                label="Avg Response"
+                value={1.2}
+                unit="s"
+                glowColor="cyan"
+              />
+            </WidgetCarousel>
+          </div>
 
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-          >
-            <MultiGaugeWidget
-              title="Model Usage"
-              gauges={[
-                { label: "Claude", value: 45, unit: "%", color: "purple" },
-                { label: "GPT-4", value: 30, unit: "%", color: "cyan" },
-                { label: "Local", value: 25, unit: "%", color: "green" },
-              ]}
-              glowColor="purple"
-            />
-            <MultiProgressWidget
-              title="Resource Consumption"
-              items={[
-                { label: "Memory", value: 2.4, max: 8, unit: "GB", color: "purple" },
-                { label: "GPU", value: 60, unit: "%", color: "cyan" },
-                { label: "Queue", value: 12, max: 50, unit: "", color: "green" },
-              ]}
-              glowColor="cyan"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
+            >
+              <MultiGaugeWidget
+                title="Model Usage"
+                gauges={[
+                  { label: "Claude", value: 45, unit: "%", color: "purple" },
+                  { label: "GPT-4", value: 30, unit: "%", color: "cyan" },
+                  { label: "Local", value: 25, unit: "%", color: "green" },
+                ]}
+                glowColor="purple"
+              />
+              <MultiProgressWidget
+                title="Resource Consumption"
+                items={[
+                  { label: "Memory", value: 2.4, max: 8, unit: "GB", color: "purple" },
+                  { label: "GPU", value: 60, unit: "%", color: "cyan" },
+                  { label: "Queue", value: 12, max: 50, unit: "", color: "green" },
+                ]}
+                glowColor="cyan"
+              />
+            </WidgetCarousel>
+          </div>
         </GlassTabsContent>
 
         {/* ==================== MEMORY TAB ==================== */}
-        <GlassTabsContent value="memory" className="m-0 mt-0 space-y-6">
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <StatCard
-              title="Total Files"
-              value="156"
-              change={{ value: 5, type: "increase" }}
-              icon={<FileText className="w-5 h-5" />}
-              glowColor="blue"
-            />
-            <StatCard
-              title="Total Size"
-              value="2.4 MB"
-              glowColor="blue"
-            />
-            <CircularProgressStat
-              label="Storage Used"
-              value={35}
-              max={100}
-              unit="%"
-              glowColor="blue"
-              size="md"
-            />
-            <MetricStat
-              label="Last Sync"
-              value={5}
-              unit="min ago"
-              glowColor="cyan"
-            />
-          </WidgetCarousel>
+        <GlassTabsContent value="memory" className="m-0 mt-0">
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <StatCard
+                title="Total Files"
+                value="156"
+                change={{ value: 5, type: "increase" }}
+                icon={<FileText className="w-5 h-5" />}
+                glowColor="blue"
+              />
+              <StatCard
+                title="Total Size"
+                value="2.4 MB"
+                glowColor="blue"
+              />
+              <CircularProgressStat
+                label="Storage Used"
+                value={35}
+                max={100}
+                unit="%"
+                glowColor="blue"
+                size="md"
+              />
+              <MetricStat
+                label="Last Sync"
+                value={5}
+                unit="min ago"
+                glowColor="cyan"
+              />
+            </WidgetCarousel>
+          </div>
 
           {/* Memory Files Grid */}
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            {memoryFiles.map((file, i) => (
-              <MemoryFileCard key={i} {...file} />
-            ))}
-            <MemoryFileCard name="user-preferences.json" size="4 KB" modified="5 hours ago" />
-            <MemoryFileCard name="session-data.bin" size="1 KB" modified="1 week ago" />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              {memoryFiles.map((file, i) => (
+                <MemoryFileCard key={i} {...file} />
+              ))}
+              <MemoryFileCard name="user-preferences.json" size="4 KB" modified="5 hours ago" />
+              <MemoryFileCard name="session-data.bin" size="1 KB" modified="1 week ago" />
+            </WidgetCarousel>
+          </div>
         </GlassTabsContent>
 
         {/* ==================== AUTOMATION TAB ==================== */}
-        <GlassTabsContent value="automation" className="m-0 mt-0 space-y-6">
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <StatCard
-              title="Active Tasks"
-              value="4"
-              icon={<Zap className="w-5 h-5" />}
-              glowColor="pink"
-            />
-            <StatCard
-              title="Completed Today"
-              value="23"
-              change={{ value: 10, type: "increase" }}
-              glowColor="green"
-            />
-            <CircularProgressStat
-              label="Success Rate"
-              value={96}
-              max={100}
-              unit="%"
-              glowColor="green"
-              size="md"
-            />
-            <MetricStat
-              label="Avg Duration"
-              value={2.5}
-              unit="min"
-              glowColor="amber"
-            />
-          </WidgetCarousel>
+        <GlassTabsContent value="automation" className="m-0 mt-0">
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <StatCard
+                title="Active Tasks"
+                value="4"
+                icon={<Zap className="w-5 h-5" />}
+                glowColor="pink"
+              />
+              <StatCard
+                title="Completed Today"
+                value="23"
+                change={{ value: 10, type: "increase" }}
+                glowColor="green"
+              />
+              <CircularProgressStat
+                label="Success Rate"
+                value={96}
+                max={100}
+                unit="%"
+                glowColor="green"
+                size="md"
+              />
+              <MetricStat
+                label="Avg Duration"
+                value={2.5}
+                unit="min"
+                glowColor="amber"
+              />
+            </WidgetCarousel>
+          </div>
 
           {/* Tasks Grid */}
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            {automationTasks.map((task) => (
-              <TaskCard key={task.id} {...task} />
-            ))}
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              {automationTasks.map((task) => (
+                <TaskCard key={task.id} {...task} />
+              ))}
+            </WidgetCarousel>
+          </div>
 
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-          >
-            <MultiGaugeWidget
-              title="Task Distribution"
-              gauges={[
-                { label: "Running", value: 1, color: "green" },
-                { label: "Pending", value: 1, color: "amber" },
-                { label: "Done", value: 2, color: "cyan" },
-              ]}
-              glowColor="pink"
-            />
-            <MultiProgressWidget
-              title="Schedule Timeline"
-              items={[
-                { label: "Hourly Tasks", value: 8, max: 10, color: "pink" },
-                { label: "Daily Tasks", value: 12, max: 15, color: "purple" },
-                { label: "Weekly Tasks", value: 3, max: 5, color: "blue" },
-              ]}
-              glowColor="purple"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
+            >
+              <MultiGaugeWidget
+                title="Task Distribution"
+                gauges={[
+                  { label: "Running", value: 1, color: "green" },
+                  { label: "Pending", value: 1, color: "amber" },
+                  { label: "Done", value: 2, color: "cyan" },
+                ]}
+                glowColor="pink"
+              />
+              <MultiProgressWidget
+                title="Schedule Timeline"
+                items={[
+                  { label: "Hourly Tasks", value: 8, max: 10, color: "pink" },
+                  { label: "Daily Tasks", value: 12, max: 15, color: "purple" },
+                  { label: "Weekly Tasks", value: 3, max: 5, color: "blue" },
+                ]}
+                glowColor="purple"
+              />
+            </WidgetCarousel>
+          </div>
         </GlassTabsContent>
 
         {/* ==================== SCREEN TAB ==================== */}
-        <GlassTabsContent value="screen" className="m-0 mt-0 space-y-6">
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <ServerStatusCard
-              icon={Monitor}
-              label="Screen Mirror"
-              status="online"
-              detail="Connected"
-              glowColor="cyan"
-            />
-            <StatCard
-              title="FPS"
-              value="30"
-              glowColor="green"
-            />
-            <CircularProgressStat
-              label="Quality"
-              value={85}
-              max={100}
-              unit="%"
-              glowColor="green"
-              size="md"
-            />
-            <MetricStat
-              label="Latency"
-              value={45}
-              unit="ms"
-              glowColor="cyan"
-            />
-          </WidgetCarousel>
+        <GlassTabsContent value="screen" className="m-0 mt-0">
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <ServerStatusCard
+                icon={Monitor}
+                label="Screen Mirror"
+                status="online"
+                detail="Connected"
+                glowColor="cyan"
+              />
+              <StatCard
+                title="FPS"
+                value="30"
+                glowColor="green"
+              />
+              <CircularProgressStat
+                label="Quality"
+                value={85}
+                max={100}
+                unit="%"
+                glowColor="green"
+                size="md"
+              />
+              <MetricStat
+                label="Latency"
+                value={45}
+                unit="ms"
+                glowColor="cyan"
+              />
+            </WidgetCarousel>
+          </div>
 
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}
-          >
-            <QuickActionCard
-              icon={Monitor}
-              label="Fullscreen"
-              description="Toggle fullscreen"
-              glowColor="cyan"
-            />
-            <QuickActionCard
-              icon={Settings}
-              label="Quality"
-              description="Adjust quality"
-              glowColor="green"
-            />
-            <QuickActionCard
-              icon={Database}
-              label="Screenshot"
-              description="Capture screen"
-              glowColor="purple"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}
+            >
+              <QuickActionCard
+                icon={Monitor}
+                label="Fullscreen"
+                description="Toggle fullscreen"
+                glowColor="cyan"
+              />
+              <QuickActionCard
+                icon={Settings}
+                label="Quality"
+                description="Adjust quality"
+                glowColor="green"
+              />
+              <QuickActionCard
+                icon={Database}
+                label="Screenshot"
+                description="Capture screen"
+                glowColor="purple"
+              />
+            </WidgetCarousel>
+          </div>
         </GlassTabsContent>
 
         {/* ==================== BACKUPS TAB ==================== */}
-        <GlassTabsContent value="backups" className="m-0 mt-0 space-y-6">
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <StatCard
-              title="Total Backups"
-              value="12"
-              icon={<HardDrive className="w-5 h-5" />}
-              glowColor="cyan"
-            />
-            <StatCard
-              title="Total Size"
-              value="4.2 GB"
-              glowColor="purple"
-            />
-            <CircularProgressStat
-              label="Storage"
-              value={42}
-              max={100}
-              unit="%"
-              glowColor="blue"
-              size="md"
-            />
-            <MetricStat
-              label="Last Backup"
-              value={2}
-              unit="hrs ago"
-              glowColor="green"
-            />
-          </WidgetCarousel>
+        <GlassTabsContent value="backups" className="m-0 mt-0">
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <StatCard
+                title="Total Backups"
+                value="12"
+                icon={<HardDrive className="w-5 h-5" />}
+                glowColor="cyan"
+              />
+              <StatCard
+                title="Total Size"
+                value="4.2 GB"
+                glowColor="purple"
+              />
+              <CircularProgressStat
+                label="Storage"
+                value={42}
+                max={100}
+                unit="%"
+                glowColor="blue"
+                size="md"
+              />
+              <MetricStat
+                label="Last Backup"
+                value={2}
+                unit="hrs ago"
+                glowColor="green"
+              />
+            </WidgetCarousel>
+          </div>
 
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-          >
-            <MultiGaugeWidget
-              title="Backup Health"
-              gauges={[
-                { label: "Success", value: 11, color: "green" },
-                { label: "Failed", value: 1, color: "red" },
-                { label: "Pending", value: 0, color: "amber" },
-              ]}
-              glowColor="cyan"
-            />
-            <MultiProgressWidget
-              title="Storage Breakdown"
-              items={[
-                { label: "Database", value: 1.8, max: 4.2, unit: "GB", color: "cyan" },
-                { label: "Config", value: 0.5, max: 4.2, unit: "GB", color: "purple" },
-                { label: "Files", value: 1.9, max: 4.2, unit: "GB", color: "blue" },
-              ]}
-              glowColor="blue"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
+            >
+              <MultiGaugeWidget
+                title="Backup Health"
+                gauges={[
+                  { label: "Success", value: 11, color: "green" },
+                  { label: "Failed", value: 1, color: "red" },
+                  { label: "Pending", value: 0, color: "amber" },
+                ]}
+                glowColor="cyan"
+              />
+              <MultiProgressWidget
+                title="Storage Breakdown"
+                items={[
+                  { label: "Database", value: 1.8, max: 4.2, unit: "GB", color: "cyan" },
+                  { label: "Config", value: 0.5, max: 4.2, unit: "GB", color: "purple" },
+                  { label: "Files", value: 1.9, max: 4.2, unit: "GB", color: "blue" },
+                ]}
+                glowColor="blue"
+              />
+            </WidgetCarousel>
+          </div>
         </GlassTabsContent>
 
         {/* ==================== SETTINGS TAB ==================== */}
-        <GlassTabsContent value="settings" className="m-0 mt-0 space-y-6">
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <ServerStatusCard
-              icon={Server}
-              label="API Server"
-              status="online"
-              detail="Port 9870"
-              glowColor="cyan"
-            />
-            <ServerStatusCard
-              icon={Database}
-              label="Database"
-              status="online"
-              detail="Connected"
-              glowColor="purple"
-            />
-            <ServerStatusCard
-              icon={Shield}
-              label="Auth"
-              status="online"
-              detail="JWT Active"
-              glowColor="green"
-            />
-            <ServerStatusCard
-              icon={Wifi}
-              label="Network"
-              status="online"
-              detail="VPN Active"
-              glowColor="blue"
-            />
-          </WidgetCarousel>
+        <GlassTabsContent value="settings" className="m-0 mt-0">
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <ServerStatusCard
+                icon={Server}
+                label="API Server"
+                status="online"
+                detail="Port 9870"
+                glowColor="cyan"
+              />
+              <ServerStatusCard
+                icon={Database}
+                label="Database"
+                status="online"
+                detail="Connected"
+                glowColor="purple"
+              />
+              <ServerStatusCard
+                icon={Shield}
+                label="Auth"
+                status="online"
+                detail="JWT Active"
+                glowColor="green"
+              />
+              <ServerStatusCard
+                icon={Wifi}
+                label="Network"
+                status="online"
+                detail="VPN Active"
+                glowColor="blue"
+              />
+            </WidgetCarousel>
+          </div>
 
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <QuickActionCard
-              icon={Settings}
-              label="General"
-              description="System settings"
-              glowColor="cyan"
-            />
-            <QuickActionCard
-              icon={Shield}
-              label="Security"
-              description="Auth & keys"
-              glowColor="purple"
-            />
-            <QuickActionCard
-              icon={Globe}
-              label="Network"
-              description="VPN & proxy"
-              glowColor="blue"
-            />
-            <QuickActionCard
-              icon={Database}
-              label="Storage"
-              description="Backup config"
-              glowColor="green"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <QuickActionCard
+                icon={Settings}
+                label="General"
+                description="System settings"
+                glowColor="cyan"
+              />
+              <QuickActionCard
+                icon={Shield}
+                label="Security"
+                description="Auth & keys"
+                glowColor="purple"
+              />
+              <QuickActionCard
+                icon={Globe}
+                label="Network"
+                description="VPN & proxy"
+                glowColor="blue"
+              />
+              <QuickActionCard
+                icon={Database}
+                label="Storage"
+                description="Backup config"
+                glowColor="green"
+              />
+            </WidgetCarousel>
+          </div>
 
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-          >
-            <MultiProgressWidget
-              title="System Limits"
-              items={[
-                { label: "API Rate", value: 750, max: 1000, unit: "/min", color: "cyan" },
-                { label: "Storage", value: 42, max: 100, unit: "%", color: "purple" },
-                { label: "Memory", value: 48, max: 100, unit: "%", color: "blue" },
-              ]}
-              glowColor="cyan"
-            />
-            <MultiGaugeWidget
-              title="Performance"
-              gauges={[
-                { label: "CPU", value: 67, unit: "%", color: "cyan" },
-                { label: "RAM", value: 48, unit: "%", color: "purple" },
-                { label: "Disk", value: 46, unit: "%", color: "blue" },
-              ]}
-              glowColor="purple"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
+            >
+              <MultiProgressWidget
+                title="System Limits"
+                items={[
+                  { label: "API Rate", value: 750, max: 1000, unit: "/min", color: "cyan" },
+                  { label: "Storage", value: 42, max: 100, unit: "%", color: "purple" },
+                  { label: "Memory", value: 48, max: 100, unit: "%", color: "blue" },
+                ]}
+                glowColor="cyan"
+              />
+              <MultiGaugeWidget
+                title="Performance"
+                gauges={[
+                  { label: "CPU", value: 67, unit: "%", color: "cyan" },
+                  { label: "RAM", value: 48, unit: "%", color: "purple" },
+                  { label: "Disk", value: 46, unit: "%", color: "blue" },
+                ]}
+                glowColor="purple"
+              />
+            </WidgetCarousel>
+          </div>
         </GlassTabsContent>
 
       </div>
