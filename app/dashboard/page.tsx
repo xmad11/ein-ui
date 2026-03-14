@@ -300,41 +300,16 @@ export default function DashboardPage() {
         {/* ==================== OVERVIEW TAB ==================== */}
         <GlassTabsContent value="overview" className="m-0 mt-0">
 
-          {/* Carousel 1 - Multi-Gauge System Stats */}
+          {/* System Stats - 3 Circular Gauges */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}
-            >
-              <MultiGaugeWidget
-                title="System Resources"
-                gauges={[
-                  { label: "RAM", value: systemStats.memory.percentage, unit: "%", color: "purple" },
-                  { label: "CPU", value: systemStats.cpu, unit: "%", color: "cyan" },
-                  { label: "Disk", value: systemStats.disk.percentage, unit: "%", color: "green" },
-                ]}
-                glowColor="green"
-                size="sm"
-              />
-              <MultiProgressWidget
-                title="Resource Details"
-                items={[
-                  { label: "Memory", value: systemStats.memory.used, max: systemStats.memory.total, unit: "GB", color: "purple" },
-                  { label: "Disk", value: systemStats.disk.used, max: systemStats.disk.total, unit: "GB", color: "blue" },
-                  { label: "CPU Load", value: systemStats.cpu, unit: "%", color: "cyan" },
-                ]}
-                glowColor="purple"
-              />
-              <MultiGaugeWidget
-                title="Network I/O"
-                gauges={[
-                  { label: "Upload", value: 45, unit: "MB/s", color: "green" },
-                  { label: "Download", value: 78, unit: "MB/s", color: "green" },
-                  { label: "Latency", value: 12, unit: "ms", color: "amber" },
-                ]}
-                glowColor="green"
-              />
-            </WidgetCarousel>
+            <MultiGaugeWidget
+              gauges={[
+                { label: "RAM", value: systemStats.memory.percentage, unit: "%", color: "purple" },
+                { label: "CPU", value: systemStats.cpu, unit: "%", color: "cyan" },
+                { label: "Disk", value: systemStats.disk.percentage, unit: "%", color: "green" },
+              ]}
+              glowColor="green"
+            />
           </div>
 
           {/* Carousel 2 - Status Cards */}
