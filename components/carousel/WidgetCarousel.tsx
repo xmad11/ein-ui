@@ -81,7 +81,7 @@ export function WidgetCarousel({
   const totalGapPx = gapPx * (currentItemsPerView - 1)
 
   return (
-    <div className={cn("w-full select-none", className)}>
+    <div className={cn("w-full select-none overflow-hidden", className)}>
       <div
         className="overflow-hidden"
         ref={emblaRef}

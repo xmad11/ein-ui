@@ -18,26 +18,30 @@ import {
   Server,
   Clock,
   CheckCircle2,
-  AlertCircle,
   Pause,
   Play,
   FileText,
-  Cloud,
-  Terminal,
   Globe,
-  ChevronUp,
+  Cog,
+  BarChart3,
+  Gauge,
+  Binary,
+  Terminal,
+  Lock,
+  RefreshCw,
 } from "lucide-react";
 import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/registry/liquid-glass/glass-tabs";
 import { GlassBadge } from "@/registry/liquid-glass/glass-badge";
 import { GlassProgress } from "@/registry/liquid-glass/glass-progress";
-import { GlassAvatar, GlassAvatarImage, GlassAvatarFallback } from "@/registry/liquid-glass/glass-avatar";
-import { GlassGauge } from "@/registry/innovative/glass-gauge";
 import { WidgetCarousel } from "@/components/carousel/WidgetCarousel";
 import { GlassWidgetBase } from "@/registry/widgets/base-widget";
 
 // Widgets
 import { StatCard, MetricStat, ComparisonStat, CircularProgressStat, MultiGaugeWidget, MultiProgressWidget } from "@/registry/widgets/stats-widget";
-import { WeatherWidget, CurrentWeatherWidget } from "@/registry/widgets/weather-widget";
+import { HourlyWeatherWidget, ForecastWidget, ForecastWeatherWidget, CurrentWeatherWidget } from "@/registry/widgets/weather-widget";
+import { StockTickerWidget, CompactStockWidget, CryptoWidget, MarketOverviewWidget } from "@/registry/widgets/stock-widget";
+import { DigitalClockWidget, WorldClockWidget, StopwatchWidget, TimerWidget, AnalogClockWidget } from "@/registry/widgets/clock-widget";
+import { CompactCalendarWidget, EventsCalendarWidget } from "@/registry/widgets/calendar-widget";
 
 // XMAD-Control Tabs Configuration
 const tabs = [
@@ -58,7 +62,7 @@ const systemStats = {
   cpu: 67,
   memory: { used: 7.8, total: 16, percentage: 48 },
   disk: { used: 234, total: 500, percentage: 46 },
-  uptime: 864000, // 10 days in seconds
+  uptime: 864000,
 };
 
 const openClawStatus = {
@@ -93,9 +97,56 @@ const memoryFiles = [
   { name: "system-config.yaml", size: "8 KB", modified: "3 days ago" },
 ];
 
+// Hourly system load data (converted from weather concept)
+const hourlyLoadData = [
+  { time: "1AM", temperature: 22, icon: "cloud" as const },
+  { time: "2AM", temperature: 21, icon: "cloud" as const },
+  { time: "3AM", temperature: 20, icon: "cloud" as const },
+  { time: "4AM", temperature: 18, icon: "cloud" as const },
+  { time: "5AM", temperature: 20, icon: "sun" as const },
+  { time: "6AM", temperature: 22, icon: "sun" as const },
+  { time: "7AM", temperature: 24, icon: "sun" as const },
+  { time: "8AM", temperature: 26, icon: "sun" as const },
+];
+
+// API usage forecast data
+const apiForecastData = [
+  { day: "Mon", high: 24, low: 14, condition: "sunny" as const },
+  { day: "Tue", high: 26, low: 15, condition: "sunny" as const },
+  { day: "Wed", high: 22, low: 13, condition: "cloudy" as const },
+  { day: "Thu", high: 20, low: 12, condition: "cloudy" as const },
+  { day: "Fri", high: 23, low: 14, condition: "sunny" as const },
+];
+
+// Resource "stocks" data
+const resourceStocks = [
+  { symbol: "CPU", name: "Processor Load", price: 67.45, change: 2.34, changePercent: 3.61, chartData: [60, 62, 58, 65, 67, 64, 68, 67] },
+  { symbol: "RAM", name: "Memory Usage", price: 48.20, change: -1.50, changePercent: -3.02, chartData: [52, 50, 48, 49, 47, 48, 50, 48] },
+  { symbol: "DISK", name: "Storage Used", price: 46.80, change: 0.30, changePercent: 0.64, chartData: [45, 45, 46, 46, 46, 47, 46, 47] },
+];
+
+// Crypto-style tokens data
+const tokenData = [
+  { symbol: "XAI", name: "XMAD AI Token", price: 0.0847, change24h: 5.23, marketCap: "$2.4M", volume24h: "$124K", sparkline: [0.078, 0.080, 0.082, 0.079, 0.083, 0.085, 0.084, 0.0847] },
+  { symbol: "MEM", name: "Memory Token", price: 1.24, change24h: -2.15, marketCap: "$890K", volume24h: "$45K", sparkline: [1.30, 1.28, 1.25, 1.26, 1.24, 1.23, 1.24, 1.24] },
+];
+
+// World clocks for server locations
+const worldClocksData = [
+  { city: "NYC", timezone: "America/New_York", isDay: true },
+  { city: "London", timezone: "Europe/London", isDay: true },
+  { city: "Tokyo", timezone: "Asia/Tokyo", isDay: false },
+];
+
+// Scheduled events
+const scheduledEvents = [
+  { id: "1", title: "Backup Cycle", time: "02:00 AM", color: "bg-cyan-500" },
+  { id: "2", title: "Cache Flush", time: "06:00 AM", color: "bg-purple-500" },
+  { id: "3", title: "Security Audit", time: "12:00 PM", color: "bg-amber-500" },
+];
+
 // ==================== WIDGET COMPONENTS ====================
 
-// System Status Badge
 function StatusBadge({ status }: { status: "online" | "offline" | "warning" }) {
   const config: Record<"online" | "offline" | "warning", { variant: "default" | "primary" | "success" | "warning" | "destructive"; label: string }> = {
     online: { variant: "success", label: "Online" },
@@ -105,7 +156,6 @@ function StatusBadge({ status }: { status: "online" | "offline" | "warning" }) {
   return <GlassBadge variant={config[status].variant}>{config[status].label}</GlassBadge>;
 }
 
-// Server Status Card
 function ServerStatusCard({
   icon: Icon,
   label,
@@ -133,7 +183,6 @@ function ServerStatusCard({
   );
 }
 
-// Task Item Card
 function TaskCard({
   name,
   status,
@@ -166,7 +215,6 @@ function TaskCard({
   );
 }
 
-// Memory File Card
 function MemoryFileCard({
   name,
   size,
@@ -190,7 +238,6 @@ function MemoryFileCard({
   );
 }
 
-// Quick Action Card
 function QuickActionCard({
   icon: Icon,
   label,
@@ -217,68 +264,25 @@ function QuickActionCard({
   );
 }
 
-// Network Info Card
-function NetworkInfoCard({
-  ip,
-  hostname,
-  peers,
+// Small mini stat widget for 2-3 grid
+function MiniStatWidget({
+  icon: Icon,
+  label,
+  value,
+  glowColor,
 }: {
-  ip: string;
-  hostname: string;
-  peers: number;
+  icon: React.ElementType;
+  label: string;
+  value: string;
+  glowColor: "cyan" | "purple" | "blue" | "pink" | "green" | "amber" | "red";
 }) {
   return (
-    <GlassWidgetBase size="md" width="sm" glowColor="purple">
-      <div className="flex items-center gap-2 mb-4">
-        <Globe className="h-5 w-5 text-white/70" />
-        <span className="text-white/60 text-sm">Network</span>
+    <GlassWidgetBase size="sm" glowColor={glowColor}>
+      <div className="flex items-center gap-2 mb-1">
+        <Icon className="h-4 w-4 text-white/60" />
+        <span className="text-white/50 text-xs">{label}</span>
       </div>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-white/50 text-sm">IP Address</span>
-          <span className="text-white font-mono text-sm">{ip}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-white/50 text-sm">Hostname</span>
-          <span className="text-white text-sm">{hostname}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-white/50 text-sm">Peers</span>
-          <span className="text-white text-sm">{peers} connected</span>
-        </div>
-      </div>
-    </GlassWidgetBase>
-  );
-}
-
-// Uptime Display
-function UptimeCard({ seconds }: { seconds: number }) {
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-
-  return (
-    <GlassWidgetBase size="md" width="sm" glowColor="green">
-      <div className="flex items-center gap-2 mb-3">
-        <Clock className="h-5 w-5 text-white/70" />
-        <span className="text-white/60 text-sm">System Uptime</span>
-      </div>
-      <div className="flex items-center gap-4">
-        <div className="text-center">
-          <div className="text-2xl font-light text-white">{days}</div>
-          <div className="text-xs text-white/50">days</div>
-        </div>
-        <div className="text-white/30">:</div>
-        <div className="text-center">
-          <div className="text-2xl font-light text-white">{hours}</div>
-          <div className="text-xs text-white/50">hours</div>
-        </div>
-        <div className="text-white/30">:</div>
-        <div className="text-center">
-          <div className="text-2xl font-light text-white">{mins}</div>
-          <div className="text-xs text-white/50">mins</div>
-        </div>
-      </div>
+      <div className="text-xl font-light text-white">{value}</div>
     </GlassWidgetBase>
   );
 }
@@ -292,7 +296,6 @@ export default function DashboardPage() {
 
   const currentTab = tabs.find((t) => t.value === activeTab);
 
-  // Reset collapse timer on tab change or user interaction
   const resetCollapseTimer = useCallback(() => {
     if (collapseTimerRef.current) {
       clearTimeout(collapseTimerRef.current);
@@ -303,7 +306,6 @@ export default function DashboardPage() {
     }, TAB_COLLAPSE_DELAY);
   }, []);
 
-  // Start collapse timer on mount
   useEffect(() => {
     resetCollapseTimer();
     return () => {
@@ -313,13 +315,11 @@ export default function DashboardPage() {
     };
   }, [resetCollapseTimer]);
 
-  // Handle tab selection
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value);
     resetCollapseTimer();
   }, [resetCollapseTimer]);
 
-  // Handle expanding tabs from collapsed state
   const handleExpandTabs = useCallback(() => {
     resetCollapseTimer();
   }, [resetCollapseTimer]);
@@ -328,22 +328,19 @@ export default function DashboardPage() {
     <GlassTabs
       value={activeTab}
       onValueChange={handleTabChange}
-      className={`h-screen overflow-x-hidden ${currentTab?.bg || "bg-background"} pt-16 flex flex-col transition-all duration-500`}
+      className={`h-screen overflow-hidden ${currentTab?.bg || "bg-background"} pt-16 flex flex-col transition-all duration-500`}
     >
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      {/* Content area - scrollable vertically */}
-      <div className="relative z-10 overflow-y-auto overflow-x-hidden px-3 py-4 md:px-4 lg:px-6 pb-24" style={{ height: "calc(100vh - 4rem - 80px)" }}>
+      {/* Content area - scrollable vertically with tab bar inside for sticky to work */}
+      <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 md:px-4 lg:px-6 pb-28">
 
         {/* ==================== OVERVIEW TAB ==================== */}
         <GlassTabsContent value="overview" className="m-0 mt-0">
 
-          {/* Carousel 1 - System Stats */}
+          {/* Row 1 - Large gauge widgets */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}>
               <MultiGaugeWidget
                 gauges={[
                   { label: "RAM", value: systemStats.memory.percentage, unit: "%", color: "purple" },
@@ -360,23 +357,20 @@ export default function DashboardPage() {
                 ]}
                 glowColor="purple"
               />
-              <MultiGaugeWidget
-                gauges={[
-                  { label: "Upload", value: 45, unit: "MB/s", color: "green" },
-                  { label: "Download", value: 78, unit: "MB/s", color: "green" },
-                  { label: "Latency", value: 12, unit: "ms", color: "amber" },
+              <ForecastWeatherWidget
+                current={{ temperature: systemStats.cpu, condition: "System Load", icon: "cloud" }}
+                forecast={[
+                  { day: "1h", high: 72, low: 45, condition: "sunny" },
+                  { day: "2h", high: 68, low: 42, condition: "cloudy" },
+                  { day: "3h", high: 75, low: 48, condition: "sunny" },
                 ]}
-                glowColor="green"
               />
             </WidgetCarousel>
           </div>
 
-          {/* Carousel 2 - Status Cards */}
+          {/* Row 2 - Server status cards */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
               <ServerStatusCard
                 icon={Server}
                 label="OpenClaw Gateway"
@@ -398,45 +392,40 @@ export default function DashboardPage() {
                 detail="Monitoring Active"
                 glowColor="green"
               />
-              <UptimeCard seconds={systemStats.uptime} />
+              <CurrentWeatherWidget
+                location="Server Room"
+                temperature={22}
+                feelsLike={21}
+                high={24}
+                low={18}
+                condition="cloudy"
+                humidity={45}
+                windSpeed={2}
+              />
             </WidgetCarousel>
           </div>
 
-          {/* Carousel 3 - Quick Stats */}
+          {/* Row 3 - Stats and mini widgets in 2-column grid */}
+          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStatWidget icon={Activity} label="Requests/min" value="1.2K" glowColor="cyan" />
+            <MiniStatWidget icon={Binary} label="Data In" value="45 MB" glowColor="green" />
+            <MiniStatWidget icon={Binary} label="Data Out" value="128 MB" glowColor="purple" />
+            <MiniStatWidget icon={Gauge} label="Latency" value="12ms" glowColor="amber" />
+          </div>
+
+          {/* Row 4 - Hourly chart and calendar */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
-              <StatCard
-                title="API Requests"
-                value="12.4K"
-                change={{ value: 8.5, type: "increase" }}
-                icon={<Activity className="w-5 h-5" />}
-                glowColor="cyan"
-              />
-              <StatCard
-                title="Active Sessions"
-                value="24"
-                change={{ value: 12, type: "increase" }}
-                glowColor="purple"
-              />
-              <CircularProgressStat
-                label="Health Score"
-                value={95}
-                max={100}
-                unit="%"
-                glowColor="green"
-                size="md"
-              />
-              <MetricStat
-                label="Cache Hit Rate"
-                value={87}
-                max={100}
-                unit="%"
-                glowColor="blue"
-              />
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
+              <HourlyWeatherWidget hours={hourlyLoadData.map(h => ({ time: h.time, temperature: h.temperature, icon: h.icon }))} />
+              <EventsCalendarWidget events={scheduledEvents} />
             </WidgetCarousel>
+          </div>
+
+          {/* Row 5 - Resource stocks */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {resourceStocks.map((stock) => (
+              <StockTickerWidget key={stock.symbol} {...stock} />
+            ))}
           </div>
 
         </GlassTabsContent>
@@ -444,12 +433,9 @@ export default function DashboardPage() {
         {/* ==================== AI CHAT TAB ==================== */}
         <GlassTabsContent value="chat" className="m-0 mt-0">
 
-          {/* Carousel 1 - Chat Stats */}
+          {/* Row 1 - Chat stats */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
               <StatCard
                 title="Messages Today"
                 value="1,247"
@@ -480,12 +466,17 @@ export default function DashboardPage() {
             </WidgetCarousel>
           </div>
 
-          {/* Carousel 2 - Model Usage */}
+          {/* Row 2 - Mini stats grid */}
+          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStatWidget icon={Brain} label="Context Size" value="128K" glowColor="purple" />
+            <MiniStatWidget icon={Cpu} label="GPU Usage" value="60%" glowColor="cyan" />
+            <MiniStatWidget icon={Database} label="Cache Hits" value="94%" glowColor="green" />
+            <MiniStatWidget icon={Clock} label="Queue Time" value="0.3s" glowColor="amber" />
+          </div>
+
+          {/* Row 3 - Model usage gauges */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
               <MultiGaugeWidget
                 title="Model Usage"
                 gauges={[
@@ -506,17 +497,34 @@ export default function DashboardPage() {
               />
             </WidgetCarousel>
           </div>
+
+          {/* Row 4 - Tokens and forecast */}
+          <div className="mb-4">
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}>
+              {tokenData.map((token) => (
+                <CryptoWidget key={token.symbol} {...token} />
+              ))}
+              <ForecastWidget forecast={apiForecastData} />
+            </WidgetCarousel>
+          </div>
+
+          {/* Row 5 - World clocks */}
+          <div className="mb-4">
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}>
+              <WorldClockWidget clocks={worldClocksData} />
+              <DigitalClockWidget showSeconds format="24h" />
+              <AnalogClockWidget size="md" showNumbers />
+            </WidgetCarousel>
+          </div>
+
         </GlassTabsContent>
 
         {/* ==================== MEMORY TAB ==================== */}
         <GlassTabsContent value="memory" className="m-0 mt-0">
 
-          {/* Carousel 1 - Memory Stats */}
+          {/* Row 1 - Memory stats */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
               <StatCard
                 title="Total Files"
                 value="156"
@@ -546,12 +554,17 @@ export default function DashboardPage() {
             </WidgetCarousel>
           </div>
 
-          {/* Carousel 2 - Memory Files */}
+          {/* Row 2 - Mini stats */}
+          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStatWidget icon={FileText} label="Context Files" value="42" glowColor="blue" />
+            <MiniStatWidget icon={Database} label="Embeddings" value="1.2K" glowColor="purple" />
+            <MiniStatWidget icon={Binary} label="Vectors" value="8.4K" glowColor="cyan" />
+            <MiniStatWidget icon={RefreshCw} label="Updates" value="24/h" glowColor="green" />
+          </div>
+
+          {/* Row 3 - Memory files */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
               {memoryFiles.map((file, i) => (
                 <MemoryFileCard key={i} {...file} />
               ))}
@@ -559,15 +572,31 @@ export default function DashboardPage() {
               <MemoryFileCard name="session-data.bin" size="1 KB" modified="1 week ago" />
             </WidgetCarousel>
           </div>
+
+          {/* Row 4 - Storage forecast */}
+          <div className="mb-4">
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
+              <ForecastWidget forecast={apiForecastData} />
+              <MultiProgressWidget
+                title="Memory Types"
+                items={[
+                  { label: "Context", value: 1.2, max: 2.4, unit: "MB", color: "blue" },
+                  { label: "Cache", value: 0.8, max: 2.4, unit: "MB", color: "purple" },
+                  { label: "Logs", value: 0.4, max: 2.4, unit: "MB", color: "cyan" },
+                ]}
+                glowColor="blue"
+              />
+            </WidgetCarousel>
+          </div>
+
         </GlassTabsContent>
 
         {/* ==================== AUTOMATION TAB ==================== */}
         <GlassTabsContent value="automation" className="m-0 mt-0">
+
+          {/* Row 1 - Task stats */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
               <StatCard
                 title="Active Tasks"
                 value="4"
@@ -597,23 +626,24 @@ export default function DashboardPage() {
             </WidgetCarousel>
           </div>
 
-          {/* Tasks Grid */}
-          <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
-              {automationTasks.map((task) => (
-                <TaskCard key={task.id} {...task} />
-              ))}
-            </WidgetCarousel>
+          {/* Row 2 - Mini stats */}
+          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStatWidget icon={Zap} label="Queued" value="12" glowColor="amber" />
+            <MiniStatWidget icon={CheckCircle2} label="Success" value="234" glowColor="green" />
+            <MiniStatWidget icon={Pause} label="Paused" value="3" glowColor="purple" />
+            <MiniStatWidget icon={Activity} label="Running" value="4" glowColor="cyan" />
           </div>
 
+          {/* Row 3 - Tasks grid */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {automationTasks.map((task) => (
+              <TaskCard key={task.id} {...task} />
+            ))}
+          </div>
+
+          {/* Row 4 - Timers and gauges */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}>
               <MultiGaugeWidget
                 title="Task Distribution"
                 gauges={[
@@ -632,17 +662,26 @@ export default function DashboardPage() {
                 ]}
                 glowColor="purple"
               />
+              <TimerWidget initialMinutes={25} />
             </WidgetCarousel>
           </div>
+
+          {/* Row 5 - Stopwatch and calendar */}
+          <div className="mb-4">
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
+              <StopwatchWidget />
+              <CompactCalendarWidget />
+            </WidgetCarousel>
+          </div>
+
         </GlassTabsContent>
 
         {/* ==================== SCREEN TAB ==================== */}
         <GlassTabsContent value="screen" className="m-0 mt-0">
+
+          {/* Row 1 - Screen stats */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
               <ServerStatusCard
                 icon={Monitor}
                 label="Screen Mirror"
@@ -650,95 +689,69 @@ export default function DashboardPage() {
                 detail="Connected"
                 glowColor="cyan"
               />
-              <StatCard
-                title="FPS"
-                value="30"
-                glowColor="green"
-              />
-              <CircularProgressStat
-                label="Quality"
-                value={85}
-                max={100}
-                unit="%"
-                glowColor="green"
-                size="md"
-              />
-              <MetricStat
-                label="Latency"
-                value={45}
-                unit="ms"
-                glowColor="cyan"
-              />
+              <StatCard title="FPS" value="30" glowColor="green" />
+              <CircularProgressStat label="Quality" value={85} max={100} unit="%" glowColor="green" size="md" />
+              <MetricStat label="Latency" value={45} unit="ms" glowColor="cyan" />
             </WidgetCarousel>
           </div>
 
+          {/* Row 2 - Mini stats */}
+          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStatWidget icon={Monitor} label="Resolution" value="1080p" glowColor="cyan" />
+            <MiniStatWidget icon={Activity} label="Bitrate" value="4.2Mbps" glowColor="green" />
+            <MiniStatWidget icon={Globe} label="Protocol" value="WebRTC" glowColor="purple" />
+            <MiniStatWidget icon={Clock} label="Session" value="2h 15m" glowColor="amber" />
+          </div>
+
+          {/* Row 3 - Quick actions */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <QuickActionCard icon={Monitor} label="Fullscreen" description="Toggle fullscreen mode" glowColor="cyan" />
+            <QuickActionCard icon={Settings} label="Quality" description="Adjust stream quality" glowColor="green" />
+            <QuickActionCard icon={Database} label="Screenshot" description="Capture current frame" glowColor="purple" />
+          </div>
+
+          {/* Row 4 - Resource monitor */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}
-            >
-              <QuickActionCard
-                icon={Monitor}
-                label="Fullscreen"
-                description="Toggle fullscreen"
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
+              <MultiProgressWidget
+                title="Stream Resources"
+                items={[
+                  { label: "Bandwidth", value: 4.2, max: 10, unit: "Mbps", color: "cyan" },
+                  { label: "CPU", value: 25, unit: "%", color: "purple" },
+                  { label: "Buffer", value: 80, unit: "%", color: "green" },
+                ]}
                 glowColor="cyan"
               />
-              <QuickActionCard
-                icon={Settings}
-                label="Quality"
-                description="Adjust quality"
-                glowColor="green"
-              />
-              <QuickActionCard
-                icon={Database}
-                label="Screenshot"
-                description="Capture screen"
-                glowColor="purple"
-              />
+              <HourlyWeatherWidget hours={hourlyLoadData.slice(0, 6).map(h => ({ time: h.time, temperature: h.temperature + 30, icon: h.icon }))} />
             </WidgetCarousel>
           </div>
+
         </GlassTabsContent>
 
         {/* ==================== BACKUPS TAB ==================== */}
         <GlassTabsContent value="backups" className="m-0 mt-0">
+
+          {/* Row 1 - Backup stats */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
-              <StatCard
-                title="Total Backups"
-                value="12"
-                icon={<HardDrive className="w-5 h-5" />}
-                glowColor="cyan"
-              />
-              <StatCard
-                title="Total Size"
-                value="4.2 GB"
-                glowColor="purple"
-              />
-              <CircularProgressStat
-                label="Storage"
-                value={42}
-                max={100}
-                unit="%"
-                glowColor="blue"
-                size="md"
-              />
-              <MetricStat
-                label="Last Backup"
-                value={2}
-                unit="hrs ago"
-                glowColor="green"
-              />
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
+              <StatCard title="Total Backups" value="12" icon={<HardDrive className="w-5 h-5" />} glowColor="cyan" />
+              <StatCard title="Total Size" value="4.2 GB" glowColor="purple" />
+              <CircularProgressStat label="Storage" value={42} max={100} unit="%" glowColor="blue" size="md" />
+              <MetricStat label="Last Backup" value={2} unit="hrs ago" glowColor="green" />
             </WidgetCarousel>
           </div>
 
+          {/* Row 2 - Mini stats */}
+          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStatWidget icon={HardDrive} label="Incremental" value="8" glowColor="cyan" />
+            <MiniStatWidget icon={Database} label="Full Backups" value="4" glowColor="purple" />
+            <MiniStatWidget icon={CheckCircle2} label="Success" value="100%" glowColor="green" />
+            <MiniStatWidget icon={Clock} label="Next Run" value="4h" glowColor="amber" />
+          </div>
+
+          {/* Row 3 - Backup health */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
               <MultiGaugeWidget
                 title="Backup Health"
                 gauges={[
@@ -759,83 +772,49 @@ export default function DashboardPage() {
               />
             </WidgetCarousel>
           </div>
+
+          {/* Row 4 - Calendar and forecast */}
+          <div className="mb-4">
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
+              <CompactCalendarWidget />
+              <ForecastWidget forecast={apiForecastData} />
+            </WidgetCarousel>
+          </div>
+
         </GlassTabsContent>
 
         {/* ==================== SETTINGS TAB ==================== */}
         <GlassTabsContent value="settings" className="m-0 mt-0">
+
+          {/* Row 1 - System status */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
-              <ServerStatusCard
-                icon={Server}
-                label="API Server"
-                status="online"
-                detail="Port 9870"
-                glowColor="cyan"
-              />
-              <ServerStatusCard
-                icon={Database}
-                label="Database"
-                status="online"
-                detail="Connected"
-                glowColor="purple"
-              />
-              <ServerStatusCard
-                icon={Shield}
-                label="Auth"
-                status="online"
-                detail="JWT Active"
-                glowColor="green"
-              />
-              <ServerStatusCard
-                icon={Wifi}
-                label="Network"
-                status="online"
-                detail="VPN Active"
-                glowColor="blue"
-              />
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
+              <ServerStatusCard icon={Server} label="API Server" status="online" detail="Port 9870" glowColor="cyan" />
+              <ServerStatusCard icon={Database} label="Database" status="online" detail="Connected" glowColor="purple" />
+              <ServerStatusCard icon={Shield} label="Auth" status="online" detail="JWT Active" glowColor="green" />
+              <ServerStatusCard icon={Wifi} label="Network" status="online" detail="VPN Active" glowColor="blue" />
             </WidgetCarousel>
           </div>
 
-          <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-            >
-              <QuickActionCard
-                icon={Settings}
-                label="General"
-                description="System settings"
-                glowColor="cyan"
-              />
-              <QuickActionCard
-                icon={Shield}
-                label="Security"
-                description="Auth & keys"
-                glowColor="purple"
-              />
-              <QuickActionCard
-                icon={Globe}
-                label="Network"
-                description="VPN & proxy"
-                glowColor="blue"
-              />
-              <QuickActionCard
-                icon={Database}
-                label="Storage"
-                description="Backup config"
-                glowColor="green"
-              />
-            </WidgetCarousel>
+          {/* Row 2 - Mini stats */}
+          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <MiniStatWidget icon={Lock} label="SSL Status" value="Valid" glowColor="green" />
+            <MiniStatWidget icon={Terminal} label="SSH Port" value="22" glowColor="cyan" />
+            <MiniStatWidget icon={Globe} label="Domain" value="Active" glowColor="purple" />
+            <MiniStatWidget icon={RefreshCw} label="Auto-Update" value="On" glowColor="amber" />
           </div>
 
+          {/* Row 3 - Quick actions */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <QuickActionCard icon={Settings} label="General" description="System settings" glowColor="cyan" />
+            <QuickActionCard icon={Shield} label="Security" description="Auth & keys" glowColor="purple" />
+            <QuickActionCard icon={Globe} label="Network" description="VPN & proxy" glowColor="blue" />
+            <QuickActionCard icon={Database} label="Storage" description="Backup config" glowColor="green" />
+          </div>
+
+          {/* Row 4 - System limits */}
           <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}
-            >
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
               <MultiProgressWidget
                 title="System Limits"
                 items={[
@@ -856,13 +835,21 @@ export default function DashboardPage() {
               />
             </WidgetCarousel>
           </div>
+
+          {/* Row 5 - Clocks */}
+          <div className="mb-4">
+            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 3, xl: 3 }}>
+              <DigitalClockWidget showSeconds format="24h" />
+              <WorldClockWidget clocks={worldClocksData} />
+              <AnalogClockWidget size="md" showNumbers={false} />
+            </WidgetCarousel>
+          </div>
+
         </GlassTabsContent>
 
-      </div>
-
-      {/* Floating Tab Bar */}
-      <div className="sticky bottom-0 z-20 flex justify-center pb-6 pt-4">
-        {/* Collapsed state - single floating button */}
+      {/* Floating Tab Bar - sticky bottom inside scroll container */}
+      <div className="sticky bottom-0 z-20 flex justify-center pb-4 pt-4 mt-auto">
+        {/* Collapsed state - single floating button (no arrow) */}
         <button
           onClick={handleExpandTabs}
           className={`
@@ -877,21 +864,19 @@ export default function DashboardPage() {
           `}
           aria-label="Expand navigation"
         >
-          <div className="relative z-10 flex items-center gap-2">
+          <div className="relative z-10 flex items-center justify-center">
             {(() => {
               const TabIcon = currentTab?.icon || LayoutDashboard;
               return <TabIcon className="h-5 w-5 text-white" />;
             })()}
-            <ChevronUp className="h-4 w-4 text-white/60" />
           </div>
-          {/* Glow effect */}
           <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
         </button>
 
-        {/* Expanded state - full tab bar */}
+        {/* Expanded state - full tab bar centered */}
         <div
           className={`
-            transition-all duration-300 ease-out origin-bottom
+            transition-all duration-300 ease-out origin-bottom flex justify-center
             ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
           `}
         >
@@ -909,6 +894,8 @@ export default function DashboardPage() {
             ))}
           </GlassTabsList>
         </div>
+      </div>
+
       </div>
     </GlassTabs>
   );
