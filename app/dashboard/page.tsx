@@ -404,44 +404,6 @@ export default function DashboardPage() {
             </WidgetCarousel>
           </div>
 
-          {/* Carousel 4 - Quick Actions */}
-          <div className="mb-4">
-            <WidgetCarousel
-              gap="sm"
-              itemsPerView={{ base: 2, sm: 3, lg: 4, xl: 5 }}
-            >
-              <QuickActionCard
-                icon={Terminal}
-                label="Terminal"
-                description="Open shell"
-                glowColor="cyan"
-              />
-              <QuickActionCard
-                icon={Database}
-                label="Backups"
-                description="3 available"
-                glowColor="purple"
-              />
-              <QuickActionCard
-                icon={Cloud}
-                label="Sync"
-                description="All synced"
-                glowColor="green"
-              />
-              <QuickActionCard
-                icon={Shield}
-                label="Security"
-                description="All clear"
-                glowColor="blue"
-              />
-              <QuickActionCard
-                icon={Settings}
-                label="Config"
-                description="System settings"
-                glowColor="amber"
-              />
-            </WidgetCarousel>
-          </div>
         </GlassTabsContent>
 
         {/* ==================== AI CHAT TAB ==================== */}
