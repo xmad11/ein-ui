@@ -1,8 +1,9 @@
 "use client"
 
 import useEmblaCarousel from "embla-carousel-react"
-import { useEffect, useCallback, useState } from "react"
+import { useEffect, useCallback, useState, useRef } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export interface WidgetCarouselProps {
   children: React.ReactNode[]
@@ -29,6 +30,9 @@ export function WidgetCarousel({
   showNavigation = true,
   itemsPerView = { base: 1, sm: 2, lg: 3, xl: 4 }
 }: WidgetCarouselProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [currentItemsPerView, setCurrentItemsPerView] = useState(itemsPerView.base ?? 1)
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
@@ -42,6 +46,28 @@ export function WidgetCarousel({
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
+
+  // Handle responsive items per view
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      const width = window.innerWidth
+      if (width >= 1280) {
+        setCurrentItemsPerView(itemsPerView.xl ?? itemsPerView.lg ?? itemsPerView.md ?? itemsPerView.sm ?? itemsPerView.base ?? 1)
+      } else if (width >= 1024) {
+        setCurrentItemsPerView(itemsPerView.lg ?? itemsPerView.md ?? itemsPerView.sm ?? itemsPerView.base ?? 1)
+      } else if (width >= 768) {
+        setCurrentItemsPerView(itemsPerView.md ?? itemsPerView.sm ?? itemsPerView.base ?? 1)
+      } else if (width >= 640) {
+        setCurrentItemsPerView(itemsPerView.sm ?? itemsPerView.base ?? 1)
+      } else {
+        setCurrentItemsPerView(itemsPerView.base ?? 1)
+      }
+    }
+
+    updateItemsPerView()
+    window.addEventListener("resize", updateItemsPerView)
+    return () => window.removeEventListener("resize", updateItemsPerView)
+  }, [itemsPerView])
 
   useEffect(() => {
     if (!emblaApi) return
@@ -61,17 +87,6 @@ export function WidgetCarousel({
     }
   }, [emblaApi])
 
-  // Responsive width classes based on itemsPerView
-  const getWidthClass = () => {
-    const base = itemsPerView.base ?? 1
-    const sm = itemsPerView.sm ?? base
-    const md = itemsPerView.md ?? sm
-    const lg = itemsPerView.lg ?? md
-    const xl = itemsPerView.xl ?? lg
-
-    return `flex-[0_0_${100/base}%] sm:flex-[0_0_${100/sm}%] md:flex-[0_0_${100/md}%] lg:flex-[0_0_${100/lg}%] xl:flex-[0_0_${100/xl}%]`
-  }
-
   const gapClasses = {
     none: "gap-0",
     sm: "gap-3",
@@ -79,14 +94,17 @@ export function WidgetCarousel({
     lg: "gap-6",
   }
 
+  const itemWidthPercent = 100 / currentItemsPerView
+
   return (
-    <div className={`relative w-full ${className}`}>
+    <div className={cn("relative w-full", className)}>
       <div className="overflow-hidden px-1" ref={emblaRef}>
-        <div className={`flex ${gapClasses[gap]}`}>
+        <div className={cn("flex", gapClasses[gap])}>
           {children.map((child, index) => (
             <div
               key={index}
-              className={`${getWidthClass()} min-w-0 flex justify-center`}
+              className="min-w-0 flex-shrink-0 flex justify-center"
+              style={{ flex: `0 0 ${itemWidthPercent}%` }}
             >
               {child}
             </div>
@@ -95,7 +113,7 @@ export function WidgetCarousel({
       </div>
 
       {/* Navigation Arrows */}
-      {showNavigation && children.length > (itemsPerView.xl ?? 4) && (
+      {showNavigation && children.length > currentItemsPerView && (
         <>
           <button
             onClick={scrollPrev}
