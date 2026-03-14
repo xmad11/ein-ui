@@ -294,149 +294,154 @@ export default function DashboardPage() {
     >
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      <div className="flex-1 relative z-10 overflow-auto px-4 py-6 md:px-6 lg:px-8 space-y-6">
+      {/* Content area - prevent horizontal scroll on page, only vertical */}
+      <div className="flex-1 relative z-10 overflow-x-hidden overflow-y-auto px-3 py-4 md:px-4 lg:px-6">
 
         {/* ==================== OVERVIEW TAB ==================== */}
-        <GlassTabsContent value="overview" className="m-0 mt-0 space-y-6">
+        <GlassTabsContent value="overview" className="m-0 mt-0">
 
           {/* Carousel 1 - Multi-Gauge System Stats */}
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}
-          >
-            <MultiGaugeWidget
-              title="System Resources"
-              gauges={[
-                { label: "CPU", value: systemStats.cpu, unit: "%", color: "cyan" },
-                { label: "RAM", value: systemStats.memory.percentage, unit: "%", color: "purple" },
-                { label: "Disk", value: systemStats.disk.percentage, unit: "%", color: "blue" },
-              ]}
-              glowColor="cyan"
-            />
-            <MultiProgressWidget
-              title="Resource Details"
-              items={[
-                { label: "Memory", value: systemStats.memory.used, max: systemStats.memory.total, unit: "GB", color: "purple" },
-                { label: "Disk", value: systemStats.disk.used, max: systemStats.disk.total, unit: "GB", color: "blue" },
-                { label: "CPU Load", value: systemStats.cpu, unit: "%", color: "cyan" },
-              ]}
-              glowColor="purple"
-            />
-            <MultiGaugeWidget
-              title="Network I/O"
-              gauges={[
-                { label: "Upload", value: 45, unit: "MB/s", color: "green" },
-                { label: "Download", value: 78, unit: "MB/s", color: "green" },
-                { label: "Latency", value: 12, unit: "ms", color: "amber" },
-              ]}
-              glowColor="green"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 3 }}
+            >
+              <MultiGaugeWidget
+                title="System Resources"
+                gauges={[
+                  { label: "CPU", value: systemStats.cpu, unit: "%", color: "cyan" },
+                  { label: "RAM", value: systemStats.memory.percentage, unit: "%", color: "purple" },
+                  { label: "Disk", value: systemStats.disk.percentage, unit: "%", color: "blue" },
+                ]}
+                glowColor="cyan"
+              />
+              <MultiProgressWidget
+                title="Resource Details"
+                items={[
+                  { label: "Memory", value: systemStats.memory.used, max: systemStats.memory.total, unit: "GB", color: "purple" },
+                  { label: "Disk", value: systemStats.disk.used, max: systemStats.disk.total, unit: "GB", color: "blue" },
+                  { label: "CPU Load", value: systemStats.cpu, unit: "%", color: "cyan" },
+                ]}
+                glowColor="purple"
+              />
+              <MultiGaugeWidget
+                title="Network I/O"
+                gauges={[
+                  { label: "Upload", value: 45, unit: "MB/s", color: "green" },
+                  { label: "Download", value: 78, unit: "MB/s", color: "green" },
+                  { label: "Latency", value: 12, unit: "ms", color: "amber" },
+                ]}
+                glowColor="green"
+              />
+            </WidgetCarousel>
+          </div>
 
           {/* Carousel 2 - Status Cards */}
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <ServerStatusCard
-              icon={Server}
-              label="OpenClaw Gateway"
-              status={openClawStatus.running ? "online" : "offline"}
-              detail={openClawStatus.running ? `PID: ${openClawStatus.pid}` : "Stopped"}
-              glowColor="cyan"
-            />
-            <ServerStatusCard
-              icon={Wifi}
-              label="Tailscale VPN"
-              status={tailscaleStatus.connected ? "online" : "offline"}
-              detail={tailscaleStatus.connected ? tailscaleStatus.ip : "Disconnected"}
-              glowColor="purple"
-            />
-            <ServerStatusCard
-              icon={Shield}
-              label="Guardian"
-              status="online"
-              detail="Monitoring Active"
-              glowColor="green"
-            />
-            <UptimeCard seconds={systemStats.uptime} />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <ServerStatusCard
+                icon={Server}
+                label="OpenClaw Gateway"
+                status={openClawStatus.running ? "online" : "offline"}
+                detail={openClawStatus.running ? `PID: ${openClawStatus.pid}` : "Stopped"}
+                glowColor="cyan"
+              />
+              <ServerStatusCard
+                icon={Wifi}
+                label="Tailscale VPN"
+                status={tailscaleStatus.connected ? "online" : "offline"}
+                detail={tailscaleStatus.connected ? tailscaleStatus.ip : "Disconnected"}
+                glowColor="purple"
+              />
+              <ServerStatusCard
+                icon={Shield}
+                label="Guardian"
+                status="online"
+                detail="Monitoring Active"
+                glowColor="green"
+              />
+              <UptimeCard seconds={systemStats.uptime} />
+            </WidgetCarousel>
+          </div>
 
           {/* Carousel 3 - Quick Stats */}
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
-          >
-            <StatCard
-              title="API Requests"
-              value="12.4K"
-              change={{ value: 8.5, type: "increase" }}
-              icon={<Activity className="w-5 h-5" />}
-              glowColor="cyan"
-            />
-            <StatCard
-              title="Active Sessions"
-              value="24"
-              change={{ value: 12, type: "increase" }}
-              glowColor="purple"
-            />
-            <CircularProgressStat
-              label="Health Score"
-              value={95}
-              max={100}
-              unit="%"
-              glowColor="green"
-              size="md"
-            />
-            <MetricStat
-              label="Cache Hit Rate"
-              value={87}
-              max={100}
-              unit="%"
-              glowColor="blue"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}
+            >
+              <StatCard
+                title="API Requests"
+                value="12.4K"
+                change={{ value: 8.5, type: "increase" }}
+                icon={<Activity className="w-5 h-5" />}
+                glowColor="cyan"
+              />
+              <StatCard
+                title="Active Sessions"
+                value="24"
+                change={{ value: 12, type: "increase" }}
+                glowColor="purple"
+              />
+              <CircularProgressStat
+                label="Health Score"
+                value={95}
+                max={100}
+                unit="%"
+                glowColor="green"
+                size="md"
+              />
+              <MetricStat
+                label="Cache Hit Rate"
+                value={87}
+                max={100}
+                unit="%"
+                glowColor="blue"
+              />
+            </WidgetCarousel>
+          </div>
 
           {/* Carousel 4 - Quick Actions */}
-          <WidgetCarousel
-            className="w-full"
-            gap="md"
-            itemsPerView={{ base: 2, sm: 3, lg: 4, xl: 5 }}
-          >
-            <QuickActionCard
-              icon={Terminal}
-              label="Terminal"
-              description="Open shell"
-              glowColor="cyan"
-            />
-            <QuickActionCard
-              icon={Database}
-              label="Backups"
-              description="3 available"
-              glowColor="purple"
-            />
-            <QuickActionCard
-              icon={Cloud}
-              label="Sync"
-              description="All synced"
-              glowColor="green"
-            />
-            <QuickActionCard
-              icon={Shield}
-              label="Security"
-              description="All clear"
-              glowColor="blue"
-            />
-            <QuickActionCard
-              icon={Settings}
-              label="Config"
-              description="System settings"
-              glowColor="amber"
-            />
-          </WidgetCarousel>
+          <div className="mb-4">
+            <WidgetCarousel
+              gap="sm"
+              itemsPerView={{ base: 2, sm: 3, lg: 4, xl: 5 }}
+            >
+              <QuickActionCard
+                icon={Terminal}
+                label="Terminal"
+                description="Open shell"
+                glowColor="cyan"
+              />
+              <QuickActionCard
+                icon={Database}
+                label="Backups"
+                description="3 available"
+                glowColor="purple"
+              />
+              <QuickActionCard
+                icon={Cloud}
+                label="Sync"
+                description="All synced"
+                glowColor="green"
+              />
+              <QuickActionCard
+                icon={Shield}
+                label="Security"
+                description="All clear"
+                glowColor="blue"
+              />
+              <QuickActionCard
+                icon={Settings}
+                label="Config"
+                description="System settings"
+                glowColor="amber"
+              />
+            </WidgetCarousel>
+          </div>
         </GlassTabsContent>
 
         {/* ==================== AI CHAT TAB ==================== */}

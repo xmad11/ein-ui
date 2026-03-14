@@ -1,19 +1,15 @@
 "use client"
 
 import useEmblaCarousel from "embla-carousel-react"
-import { useEffect, useCallback, useState, useRef } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useEffect, useCallback, useState } from "react"
 import { cn } from "@/lib/utils"
 
 export interface WidgetCarouselProps {
   children: React.ReactNode[]
   className?: string
-  gap?: "none" | "sm" | "md" | "lg"
-  showNavigation?: boolean
-  /**
-   * Number of items to show at different breakpoints
-   * Default: { base: 1, sm: 2, lg: 3, xl: 4 }
-   */
+  /** Gap between items - default is 12px (3) */
+  gap?: "none" | "xs" | "sm" | "md"
+  /** Number of items to show at different breakpoints */
   itemsPerView?: {
     base?: number
     sm?: number
@@ -26,26 +22,19 @@ export interface WidgetCarouselProps {
 export function WidgetCarousel({
   children,
   className = "",
-  gap = "md",
-  showNavigation = true,
+  gap = "sm",
   itemsPerView = { base: 1, sm: 2, lg: 3, xl: 4 }
 }: WidgetCarouselProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
   const [currentItemsPerView, setCurrentItemsPerView] = useState(itemsPerView.base ?? 1)
 
+  // Embla carousel with proper snap behavior
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
+    loop: false, // No loop for cleaner snap behavior
     align: "start",
-    skipSnaps: false,
-    dragFree: true,
-    containScroll: "trimSnaps",
+    skipSnaps: false, // Ensure we snap to each item
+    dragFree: false, // Disable free dragging
+    containScroll: "keepSnaps", // Keep all snaps
   })
-
-  const [canScrollPrev, setCanScrollPrev] = useState(false)
-  const [canScrollNext, setCanScrollNext] = useState(false)
-
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
 
   // Handle responsive items per view
   useEffect(() => {
@@ -69,70 +58,48 @@ export function WidgetCarousel({
     return () => window.removeEventListener("resize", updateItemsPerView)
   }, [itemsPerView])
 
+  // Re-initialize Embla when items per view changes
   useEffect(() => {
-    if (!emblaApi) return
-
-    const onSelect = () => {
-      setCanScrollPrev(emblaApi.canScrollPrev())
-      setCanScrollNext(emblaApi.canScrollNext())
+    if (emblaApi) {
+      emblaApi.reInit()
     }
+  }, [currentItemsPerView, emblaApi])
 
-    onSelect()
-    emblaApi.on("select", onSelect)
-    emblaApi.on("reInit", onSelect)
-
-    return () => {
-      emblaApi.off("select", onSelect)
-      emblaApi.off("reInit", onSelect)
-    }
-  }, [emblaApi])
-
+  // Gap classes - using smaller values
   const gapClasses = {
     none: "gap-0",
-    sm: "gap-3",
-    md: "gap-4",
-    lg: "gap-6",
+    xs: "gap-2",   // 8px
+    sm: "gap-3",   // 12px
+    md: "gap-4",   // 16px
   }
 
+  // Calculate item width percentage
   const itemWidthPercent = 100 / currentItemsPerView
 
   return (
-    <div className={cn("relative w-full", className)}>
-      <div className="overflow-hidden px-1" ref={emblaRef}>
+    <div className={cn("w-full select-none", className)}>
+      {/* Overflow container - prevents horizontal page scroll */}
+      <div
+        className="overflow-hidden"
+        ref={emblaRef}
+        style={{ touchAction: "pan-x" }} // Only allow horizontal touch
+      >
+        {/* Flex container with gap */}
         <div className={cn("flex", gapClasses[gap])}>
           {children.map((child, index) => (
             <div
               key={index}
-              className="min-w-0 flex-shrink-0 flex justify-center"
-              style={{ flex: `0 0 ${itemWidthPercent}%` }}
+              className="flex-shrink-0 flex-grow-0"
+              style={{
+                flex: `0 0 ${itemWidthPercent}%`,
+                maxWidth: `${itemWidthPercent}%`,
+              }}
             >
               {child}
             </div>
           ))}
         </div>
       </div>
-
-      {/* Navigation Arrows */}
-      {showNavigation && children.length > currentItemsPerView && (
-        <>
-          <button
-            onClick={scrollPrev}
-            disabled={!canScrollPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            aria-label="Previous"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={scrollNext}
-            disabled={!canScrollNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            aria-label="Next"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </>
-      )}
     </div>
   )
 }
