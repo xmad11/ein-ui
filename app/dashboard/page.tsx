@@ -796,12 +796,6 @@ export default function DashboardPage() {
           </div>
 
         </GlassTabsContent>
-              />
-              <HourlyWeatherWidget hours={hourlyLoadData.slice(0, 6).map(h => ({ time: h.time, temperature: h.temperature + 30, icon: h.icon }))} />
-            </WidgetCarousel>
-          </div>
-
-        </GlassTabsContent>
 
         {/* ==================== BACKUPS TAB ==================== */}
         <GlassTabsContent value="backups" className="m-0 mt-0">
