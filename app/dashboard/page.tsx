@@ -328,12 +328,16 @@ export default function DashboardPage() {
     <GlassTabs
       value={activeTab}
       onValueChange={handleTabChange}
-      className={`h-screen overflow-hidden ${currentTab?.bg || "bg-background"} pt-16 flex flex-col transition-all duration-500`}
+      className="h-screen overflow-hidden bg-slate-900 pt-16 flex flex-col transition-all duration-500"
     >
-      <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+      {/* Background - same as docs pages */}
+      <div className="absolute inset-0 bg-linear-to-br from-slate-900 via-blue-950 to-slate-900" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-cyan-500/15 rounded-full blur-3xl animate-pulse" />
 
       {/* Content area - scrollable vertically with tab bar inside for sticky to work */}
-      <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 md:px-4 lg:px-6 pb-28">
+      <div className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 md:px-4 lg:px-6 pb-20">
 
         {/* ==================== OVERVIEW TAB ==================== */}
         <GlassTabsContent value="overview" className="m-0 mt-0">
@@ -848,18 +852,18 @@ export default function DashboardPage() {
         </GlassTabsContent>
 
       {/* Floating Tab Bar - sticky bottom inside scroll container */}
-      <div className="sticky bottom-0 z-20 flex justify-center pb-4 pt-4 mt-auto">
+      <div className="sticky bottom-0 z-20 flex justify-center pb-2 pt-2 mt-auto">
         {/* Collapsed state - single floating button (no arrow) */}
         <button
           onClick={handleExpandTabs}
           className={`
             transition-all duration-300 ease-out
             ${tabsExpanded ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'}
-            relative p-4 rounded-2xl
+            relative p-3 rounded-xl
             bg-white/10 backdrop-blur-xl border border-white/20
             shadow-[0_4px_16px_rgba(0,0,0,0.2)]
             hover:bg-white/15 active:scale-95
-            before:absolute before:inset-0 before:rounded-2xl
+            before:absolute before:inset-0 before:rounded-xl
             before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none
           `}
           aria-label="Expand navigation"
@@ -867,29 +871,29 @@ export default function DashboardPage() {
           <div className="relative z-10 flex items-center justify-center">
             {(() => {
               const TabIcon = currentTab?.icon || LayoutDashboard;
-              return <TabIcon className="h-5 w-5 text-white" />;
+              return <TabIcon className="h-4 w-4 text-white" />;
             })()}
           </div>
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
+          <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
         </button>
 
-        {/* Expanded state - full tab bar centered */}
+        {/* Expanded state - full tab bar centered, smaller for mobile */}
         <div
           className={`
             transition-all duration-300 ease-out origin-bottom flex justify-center
             ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
           `}
         >
-          <GlassTabsList className="flex items-center justify-center gap-1 px-2">
+          <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">
             {tabs.map((tab) => (
               <GlassTabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="group p-3 transition-all duration-200"
+                className="group p-2 transition-all duration-200 rounded-lg"
                 onClick={resetCollapseTimer}
               >
-                <tab.icon className="h-4 w-4" />
-                <span className="ml-2 hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
+                <tab.icon className="h-3.5 w-3.5" />
+                <span className="ml-1.5 text-xs hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
               </GlassTabsTrigger>
             ))}
           </GlassTabsList>
