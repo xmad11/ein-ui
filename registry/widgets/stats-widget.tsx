@@ -261,6 +261,30 @@ function CircularProgressStat({
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
 
+  // Animated display value
+  const [displayValue, setDisplayValue] = React.useState(0);
+
+  React.useEffect(() => {
+    const duration = 1000;
+    const steps = 60;
+    const increment = value / steps;
+    let current = 0;
+    let step = 0;
+
+    const timer = setInterval(() => {
+      step++;
+      current = Math.min(current + increment, value);
+      setDisplayValue(Math.round(current));
+
+      if (step >= steps) {
+        clearInterval(timer);
+        setDisplayValue(value);
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
   const sizeConfig = {
     sm: { container: "w-32 h-32", text: "text-2xl", label: "text-xs" },
     md: { container: "w-40 h-40", text: "text-3xl", label: "text-sm" },
@@ -312,7 +336,7 @@ function CircularProgressStat({
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {icon && <div className="text-white/60 mb-1">{icon}</div>}
           <div className={cn("font-light text-white", config.text)}>
-            {value}
+            {displayValue}
             {unit && <span className="text-white/60 text-lg ml-1">{unit}</span>}
           </div>
           <div className={cn("text-white/50 mt-1", config.label)}>{label}</div>
@@ -351,6 +375,46 @@ function MultiGaugeWidget({
 }: MultiGaugeWidgetProps) {
   const radius = size === "md" ? 32 : 28;
   const circumference = 2 * Math.PI * radius;
+
+  // Animated values for each gauge
+  const [displayValues, setDisplayValues] = React.useState(gauges.map(() => 0));
+
+  React.useEffect(() => {
+    const duration = 1000;
+    const steps = 60;
+    const timers: NodeJS.Timeout[] = [];
+
+    gauges.forEach((gauge, index) => {
+      const targetValue = gauge.value;
+      const increment = targetValue / steps;
+      let current = 0;
+      let step = 0;
+
+      const timer = setInterval(() => {
+        step++;
+        current = Math.min(current + increment, targetValue);
+
+        setDisplayValues(prev => {
+          const newValues = [...prev];
+          newValues[index] = Math.round(current);
+          return newValues;
+        });
+
+        if (step >= steps) {
+          clearInterval(timer);
+          setDisplayValues(prev => {
+            const newValues = [...prev];
+            newValues[index] = targetValue;
+            return newValues;
+          });
+        }
+      }, duration / steps);
+
+      timers.push(timer);
+    });
+
+    return () => timers.forEach(t => clearInterval(t));
+  }, [gauges]);
 
   const strokeColors = {
     cyan: "#06b6d4",
@@ -409,7 +473,7 @@ function MultiGaugeWidget({
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className={cn("font-light text-white", textSize)}>
-                    {gauge.value}
+                    {displayValues[index]}
                     {gauge.unit && <span className="text-white/60 text-xs">{gauge.unit}</span>}
                   </span>
                 </div>
