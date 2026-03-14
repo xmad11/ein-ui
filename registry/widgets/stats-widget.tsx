@@ -261,10 +261,14 @@ function CircularProgressStat({
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
 
-  // Animated display value
+  // Animated display value - only animate once on mount
   const [displayValue, setDisplayValue] = React.useState(0);
+  const hasAnimated = React.useRef(false);
 
   React.useEffect(() => {
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
+
     const duration = 1000;
     const steps = 60;
     const increment = value / steps;
@@ -376,10 +380,14 @@ function MultiGaugeWidget({
   const radius = size === "md" ? 32 : 28;
   const circumference = 2 * Math.PI * radius;
 
-  // Animated values for each gauge
+  // Animated values for each gauge - only animate once on mount
   const [displayValues, setDisplayValues] = React.useState(gauges.map(() => 0));
+  const hasAnimated = React.useRef(false);
 
   React.useEffect(() => {
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
+
     const duration = 1000;
     const steps = 60;
     const timers: NodeJS.Timeout[] = [];
