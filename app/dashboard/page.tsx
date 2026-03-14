@@ -29,10 +29,30 @@ import {
   Terminal,
   Lock,
   RefreshCw,
+  Users,
+  DollarSign,
+  Plus,
+  Search,
+  MoreHorizontal,
+  ArrowUpRight,
+  ArrowDownRight,
+  Bell,
+  Folder,
 } from "lucide-react";
 import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/registry/liquid-glass/glass-tabs";
 import { GlassBadge } from "@/registry/liquid-glass/glass-badge";
 import { GlassProgress } from "@/registry/liquid-glass/glass-progress";
+import {
+  GlassCard,
+  GlassCardHeader,
+  GlassCardTitle,
+  GlassCardDescription,
+  GlassCardContent,
+} from "@/registry/liquid-glass/glass-card";
+import { GlassButton } from "@/registry/liquid-glass/glass-button";
+import { GlassInput } from "@/registry/liquid-glass/glass-input";
+import { GlassAvatar, GlassAvatarFallback } from "@/registry/liquid-glass/glass-avatar";
+import { Label } from "@/components/ui/label";
 import { WidgetCarousel } from "@/components/carousel/WidgetCarousel";
 import { GlassWidgetBase } from "@/registry/widgets/base-widget";
 
@@ -143,6 +163,24 @@ const scheduledEvents = [
   { id: "1", title: "Backup Cycle", time: "02:00 AM", color: "bg-cyan-500" },
   { id: "2", title: "Cache Flush", time: "06:00 AM", color: "bg-purple-500" },
   { id: "3", title: "Security Audit", time: "12:00 PM", color: "bg-amber-500" },
+];
+
+// Admin panel stats
+const adminStats = [
+  { title: "Total Backups", value: "12,456", change: "+12.5%", trend: "up", icon: Database },
+  { title: "Storage Used", value: "54.3 GB", change: "+8.2%", trend: "up", icon: HardDrive },
+  { title: "Success Rate", value: "99.1%", change: "+4.3%", trend: "up", icon: TrendingUp },
+  { title: "Active Jobs", value: "3", change: "-2.1%", trend: "down", icon: Activity },
+];
+
+// Backup history
+const backupHistory = [
+  { name: "Daily Backup", type: "Incremental", status: "completed", size: "2.4 GB" },
+  { name: "Weekly Full", type: "Full", status: "completed", size: "12.1 GB" },
+  { name: "Database Dump", type: "Incremental", status: "running", size: "1.2 GB" },
+  { name: "Config Backup", type: "Full", status: "completed", size: "0.5 GB" },
+  { name: "Logs Archive", type: "Incremental", status: "pending", size: "0.8 GB" },
+  { name: "Media Backup", type: "Full", status: "completed", size: "8.3 GB" },
 ];
 
 // ==================== WIDGET COMPONENTS ====================
@@ -735,55 +773,240 @@ export default function DashboardPage() {
         {/* ==================== BACKUPS TAB ==================== */}
         <GlassTabsContent value="backups" className="m-0 mt-0">
 
-          {/* Row 1 - Backup stats */}
-          <div className="mb-4">
-            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
-              <StatCard title="Total Backups" value="12" icon={<HardDrive className="w-5 h-5" />} glowColor="cyan" />
-              <StatCard title="Total Size" value="4.2 GB" glowColor="purple" />
-              <CircularProgressStat label="Storage" value={42} max={100} unit="%" glowColor="blue" size="md" />
-              <MetricStat label="Last Backup" value={2} unit="hrs ago" glowColor="green" />
-            </WidgetCarousel>
+          {/* Row 1 - Stats Grid (2x2 on mobile, 4 columns on desktop) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            {adminStats.map((stat) => (
+              <GlassCard key={stat.title}>
+                <GlassCardContent className="pt-4 pb-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-xs text-white/60 mb-1">{stat.title}</p>
+                      <p className="text-xl font-bold text-white">{stat.value}</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        {stat.trend === "up" ? (
+                          <ArrowUpRight className="h-3 w-3 text-green-400" />
+                        ) : (
+                          <ArrowDownRight className="h-3 w-3 text-red-400" />
+                        )}
+                        <span className={`text-xs ${stat.trend === "up" ? "text-green-400" : "text-red-400"}`}>
+                          {stat.change}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-xl bg-white/10">
+                      <stat.icon className="h-4 w-4 text-white/60" />
+                    </div>
+                  </div>
+                </GlassCardContent>
+              </GlassCard>
+            ))}
           </div>
 
-          {/* Row 2 - Mini stats */}
-          <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-            <MiniStatWidget icon={HardDrive} label="Incremental" value="8" glowColor="cyan" />
-            <MiniStatWidget icon={Database} label="Full Backups" value="4" glowColor="purple" />
-            <MiniStatWidget icon={CheckCircle2} label="Success" value="100%" glowColor="green" />
-            <MiniStatWidget icon={Clock} label="Next Run" value="4h" glowColor="amber" />
+          {/* Row 2 - Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+            {/* Backup History Table */}
+            <div className="lg:col-span-2">
+              <GlassCard>
+                <GlassCardHeader>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                      <GlassCardTitle>Backup History</GlassCardTitle>
+                      <GlassCardDescription>Manage your backup jobs</GlassCardDescription>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
+                        <GlassInput className="pl-9 w-full sm:w-40" placeholder="Search..." />
+                      </div>
+                      <GlassButton variant="primary" size="sm">
+                        <Plus className="h-4 w-4 mr-1" /> New
+                      </GlassButton>
+                    </div>
+                  </div>
+                </GlassCardHeader>
+                <GlassCardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-white/10">
+                          <th className="text-left py-2 px-2 text-xs font-medium text-white/40 uppercase">Name</th>
+                          <th className="text-left py-2 px-2 text-xs font-medium text-white/40 uppercase hidden sm:table-cell">Type</th>
+                          <th className="text-left py-2 px-2 text-xs font-medium text-white/40 uppercase">Status</th>
+                          <th className="text-left py-2 px-2 text-xs font-medium text-white/40 uppercase hidden sm:table-cell">Size</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {backupHistory.map((backup, i) => (
+                          <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                            <td className="py-2.5 px-2">
+                              <div className="flex items-center gap-2">
+                                <div className="p-1.5 rounded-lg bg-white/10">
+                                  <HardDrive className="h-3.5 w-3.5 text-cyan-400" />
+                                </div>
+                                <span className="text-sm text-white truncate">{backup.name}</span>
+                              </div>
+                            </td>
+                            <td className="py-2.5 px-2 hidden sm:table-cell">
+                              <span className="text-sm text-white/70">{backup.type}</span>
+                            </td>
+                            <td className="py-2.5 px-2">
+                              <GlassBadge variant={backup.status === "completed" ? "success" : backup.status === "running" ? "primary" : "warning"}>
+                                {backup.status}
+                              </GlassBadge>
+                            </td>
+                            <td className="py-2.5 px-2 hidden sm:table-cell">
+                              <span className="text-sm text-white/50">{backup.size}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </GlassCardContent>
+              </GlassCard>
+            </div>
+
+            {/* Sidebar Widgets */}
+            <div className="space-y-4">
+              {/* Storage */}
+              <GlassCard>
+                <GlassCardHeader>
+                  <GlassCardTitle className="flex items-center gap-2 text-sm">
+                    <Database className="h-4 w-4" /> Storage
+                  </GlassCardTitle>
+                </GlassCardHeader>
+                <GlassCardContent>
+                  <GlassProgress value={68} className="mb-3" />
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/60">68.5 GB used</span>
+                    <span className="text-white/40">100 GB</span>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <Folder className="h-3.5 w-3.5 text-cyan-400" />
+                        <span className="text-white/70">Database</span>
+                      </div>
+                      <span className="text-white/50">24.5 GB</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <Folder className="h-3.5 w-3.5 text-purple-400" />
+                        <span className="text-white/70">Files</span>
+                      </div>
+                      <span className="text-white/50">32.1 GB</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <Folder className="h-3.5 w-3.5 text-blue-400" />
+                        <span className="text-white/70">Configs</span>
+                      </div>
+                      <span className="text-white/50">11.9 GB</span>
+                    </div>
+                  </div>
+                </GlassCardContent>
+              </GlassCard>
+
+              {/* Recent Activity */}
+              <GlassCard>
+                <GlassCardHeader>
+                  <GlassCardTitle className="text-sm">Recent Activity</GlassCardTitle>
+                </GlassCardHeader>
+                <GlassCardContent>
+                  <div className="space-y-3">
+                    {[
+                      { action: "Backup completed", time: "2 min ago" },
+                      { action: "New schedule added", time: "15 min ago" },
+                      { action: "Storage cleaned", time: "1 hour ago" },
+                      { action: "Full backup started", time: "3 hours ago" },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-cyan-400" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-white/80 truncate">{item.action}</p>
+                          <p className="text-xs text-white/40">{item.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </GlassCardContent>
+              </GlassCard>
+            </div>
           </div>
 
-          {/* Row 3 - Backup health */}
-          <div className="mb-4">
-            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
-              <MultiGaugeWidget
-                title="Backup Health"
-                gauges={[
-                  { label: "Success", value: 11, color: "green" },
-                  { label: "Failed", value: 1, color: "red" },
-                  { label: "Pending", value: 0, color: "amber" },
-                ]}
-                glowColor="cyan"
-              />
-              <MultiProgressWidget
-                title="Storage Breakdown"
-                items={[
-                  { label: "Database", value: 1.8, max: 4.2, unit: "GB", color: "cyan" },
-                  { label: "Config", value: 0.5, max: 4.2, unit: "GB", color: "purple" },
-                  { label: "Files", value: 1.9, max: 4.2, unit: "GB", color: "blue" },
-                ]}
-                glowColor="blue"
-              />
-            </WidgetCarousel>
-          </div>
-
-          {/* Row 4 - Calendar and forecast */}
-          <div className="mb-4">
-            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 1, lg: 2, xl: 2 }}>
-              <CompactCalendarWidget />
-              <ForecastWidget forecast={apiForecastData} />
-            </WidgetCarousel>
-          </div>
+          {/* Row 3 - Settings Tabs */}
+          <GlassCard>
+            <GlassCardHeader>
+              <GlassCardTitle>Backup Settings</GlassCardTitle>
+              <GlassCardDescription>Manage your backup preferences</GlassCardDescription>
+            </GlassCardHeader>
+            <GlassCardContent>
+              <GlassTabs defaultValue="general">
+                <GlassTabsList className="w-full">
+                  <GlassTabsTrigger value="general" className="group flex-1">
+                    <Settings className="h-4 w-4" />
+                    <span className="ml-2 hidden group-data-[state=active]:inline sm:inline">General</span>
+                  </GlassTabsTrigger>
+                  <GlassTabsTrigger value="notifications" className="group flex-1">
+                    <Bell className="h-4 w-4" />
+                    <span className="ml-2 hidden group-data-[state=active]:inline sm:inline">Alerts</span>
+                  </GlassTabsTrigger>
+                  <GlassTabsTrigger value="security" className="group flex-1">
+                    <Shield className="h-4 w-4" />
+                    <span className="ml-2 hidden group-data-[state=active]:inline sm:inline">Security</span>
+                  </GlassTabsTrigger>
+                </GlassTabsList>
+                <GlassTabsContent value="general">
+                  <div className="space-y-4">
+                    <div className="flex flex-col gap-2">
+                      <Label className="text-white/80">Backup Name</Label>
+                      <GlassInput defaultValue="Daily System Backup" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="text-white/80">Schedule</Label>
+                      <GlassInput defaultValue="Every 24 hours" />
+                    </div>
+                    <GlassButton variant="primary">Save Changes</GlassButton>
+                  </div>
+                </GlassTabsContent>
+                <GlassTabsContent value="notifications">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                      <span className="text-white/80 text-sm">Email alerts</span>
+                      <div className="w-10 h-6 bg-cyan-500/50 rounded-full relative">
+                        <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                      <span className="text-white/80 text-sm">Push notifications</span>
+                      <div className="w-10 h-6 bg-white/20 rounded-full relative">
+                        <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white/60 rounded-full" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                      <span className="text-white/80 text-sm">Failure alerts</span>
+                      <div className="w-10 h-6 bg-cyan-500/50 rounded-full relative">
+                        <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                </GlassTabsContent>
+                <GlassTabsContent value="security">
+                  <div className="space-y-4">
+                    <div className="flex flex-col gap-2">
+                      <Label className="text-white/80">Encryption Key</Label>
+                      <GlassInput type="password" placeholder="••••••••" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="text-white/80">Confirm Key</Label>
+                      <GlassInput type="password" placeholder="••••••••" />
+                    </div>
+                    <GlassButton variant="primary">Update Encryption</GlassButton>
+                  </div>
+                </GlassTabsContent>
+              </GlassTabs>
+            </GlassCardContent>
+          </GlassCard>
 
         </GlassTabsContent>
 
