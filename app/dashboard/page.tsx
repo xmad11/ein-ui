@@ -183,6 +183,22 @@ const backupHistory = [
   { name: "Media Backup", type: "Full", status: "completed", size: "8.3 GB" },
 ];
 
+// AI Chat stats
+const chatStats = [
+  { title: "Messages", value: "1,247", change: "+15%", trend: "up", icon: MessageSquare },
+  { title: "Tokens Used", value: "845K", change: "+23%", trend: "up", icon: Cpu },
+  { title: "API Quota", value: "67%", change: "+5%", trend: "up", icon: Gauge },
+  { title: "Avg Response", value: "1.2s", change: "-8%", trend: "down", icon: Clock },
+];
+
+// Screen stats
+const screenStats = [
+  { title: "FPS", value: "30", change: "Stable", trend: "up", icon: Monitor },
+  { title: "Quality", value: "85%", change: "+2%", trend: "up", icon: Activity },
+  { title: "Latency", value: "45ms", change: "-5ms", trend: "up", icon: Globe },
+  { title: "Bitrate", value: "4.2Mb", change: "+0.3", trend: "up", icon: Binary },
+];
+
 // ==================== WIDGET COMPONENTS ====================
 
 function StatusBadge({ status }: { status: "online" | "offline" | "warning" }) {
@@ -475,37 +491,33 @@ export default function DashboardPage() {
         {/* ==================== AI CHAT TAB ==================== */}
         <GlassTabsContent value="chat" className="m-0 mt-0">
 
-          {/* Row 1 - Chat stats */}
-          <div className="mb-4">
-            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
-              <StatCard
-                title="Messages Today"
-                value="1,247"
-                change={{ value: 15, type: "increase" }}
-                icon={<MessageSquare className="w-5 h-5" />}
-                glowColor="purple"
-              />
-              <StatCard
-                title="Tokens Used"
-                value="845K"
-                change={{ value: 23, type: "increase" }}
-                glowColor="purple"
-              />
-              <CircularProgressStat
-                label="API Quota"
-                value={67}
-                max={100}
-                unit="%"
-                glowColor="purple"
-                size="md"
-              />
-              <MetricStat
-                label="Avg Response"
-                value={1.2}
-                unit="s"
-                glowColor="cyan"
-              />
-            </WidgetCarousel>
+          {/* Row 1 - Stats Grid (2x2 on mobile, 4 columns on desktop) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            {chatStats.map((stat) => (
+              <GlassCard key={stat.title}>
+                <GlassCardContent className="pt-4 pb-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-xs text-white/60 mb-1">{stat.title}</p>
+                      <p className="text-xl font-bold text-white">{stat.value}</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        {stat.trend === "up" ? (
+                          <ArrowUpRight className="h-3 w-3 text-green-400" />
+                        ) : (
+                          <ArrowDownRight className="h-3 w-3 text-red-400" />
+                        )}
+                        <span className={`text-xs ${stat.trend === "up" ? "text-green-400" : "text-red-400"}`}>
+                          {stat.change}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-xl bg-white/10">
+                      <stat.icon className="h-4 w-4 text-white/60" />
+                    </div>
+                  </div>
+                </GlassCardContent>
+              </GlassCard>
+            ))}
           </div>
 
           {/* Row 2 - Mini stats grid */}
@@ -721,20 +733,33 @@ export default function DashboardPage() {
         {/* ==================== SCREEN TAB ==================== */}
         <GlassTabsContent value="screen" className="m-0 mt-0">
 
-          {/* Row 1 - Screen stats */}
-          <div className="mb-4">
-            <WidgetCarousel gap="sm" itemsPerView={{ base: 1, sm: 2, lg: 3, xl: 4 }}>
-              <ServerStatusCard
-                icon={Monitor}
-                label="Screen Mirror"
-                status="online"
-                detail="Connected"
-                glowColor="cyan"
-              />
-              <StatCard title="FPS" value="30" glowColor="green" />
-              <CircularProgressStat label="Quality" value={85} max={100} unit="%" glowColor="green" size="md" />
-              <MetricStat label="Latency" value={45} unit="ms" glowColor="cyan" />
-            </WidgetCarousel>
+          {/* Row 1 - Stats Grid (2x2 on mobile, 4 columns on desktop) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            {screenStats.map((stat) => (
+              <GlassCard key={stat.title}>
+                <GlassCardContent className="pt-4 pb-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-xs text-white/60 mb-1">{stat.title}</p>
+                      <p className="text-xl font-bold text-white">{stat.value}</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        {stat.trend === "up" ? (
+                          <ArrowUpRight className="h-3 w-3 text-green-400" />
+                        ) : (
+                          <ArrowDownRight className="h-3 w-3 text-red-400" />
+                        )}
+                        <span className={`text-xs ${stat.trend === "up" ? "text-green-400" : "text-red-400"}`}>
+                          {stat.change}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-xl bg-white/10">
+                      <stat.icon className="h-4 w-4 text-white/60" />
+                    </div>
+                  </div>
+                </GlassCardContent>
+              </GlassCard>
+            ))}
           </div>
 
           {/* Row 2 - Mini stats */}
@@ -763,6 +788,12 @@ export default function DashboardPage() {
                   { label: "Buffer", value: 80, unit: "%", color: "green" },
                 ]}
                 glowColor="cyan"
+              />
+              <HourlyWeatherWidget hours={hourlyLoadData.slice(0, 6).map(h => ({ time: h.time, temperature: h.temperature + 30, icon: h.icon }))} />
+            </WidgetCarousel>
+          </div>
+
+        </GlassTabsContent>
               />
               <HourlyWeatherWidget hours={hourlyLoadData.slice(0, 6).map(h => ({ time: h.time, temperature: h.temperature + 30, icon: h.icon }))} />
             </WidgetCarousel>
