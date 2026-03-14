@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -25,6 +25,7 @@ import {
   Cloud,
   Terminal,
   Globe,
+  ChevronUp,
 } from "lucide-react";
 import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/registry/liquid-glass/glass-tabs";
 import { GlassBadge } from "@/registry/liquid-glass/glass-badge";
@@ -48,6 +49,9 @@ const tabs = [
   { value: "backups", icon: HardDrive, label: "Backups", bg: "tab-bg-ocean" },
   { value: "settings", icon: Settings, label: "Settings", bg: "tab-bg-aurora" },
 ];
+
+// Tab collapse timing (in ms)
+const TAB_COLLAPSE_DELAY = 2000;
 
 // Mock Data for XMAD-Control
 const systemStats = {
@@ -283,19 +287,53 @@ function UptimeCard({ seconds }: { seconds: number }) {
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
+  const [tabsExpanded, setTabsExpanded] = useState(true);
+  const collapseTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentTab = tabs.find((t) => t.value === activeTab);
+
+  // Reset collapse timer on tab change or user interaction
+  const resetCollapseTimer = useCallback(() => {
+    if (collapseTimerRef.current) {
+      clearTimeout(collapseTimerRef.current);
+    }
+    setTabsExpanded(true);
+    collapseTimerRef.current = setTimeout(() => {
+      setTabsExpanded(false);
+    }, TAB_COLLAPSE_DELAY);
+  }, []);
+
+  // Start collapse timer on mount
+  useEffect(() => {
+    resetCollapseTimer();
+    return () => {
+      if (collapseTimerRef.current) {
+        clearTimeout(collapseTimerRef.current);
+      }
+    };
+  }, [resetCollapseTimer]);
+
+  // Handle tab selection
+  const handleTabChange = useCallback((value: string) => {
+    setActiveTab(value);
+    resetCollapseTimer();
+  }, [resetCollapseTimer]);
+
+  // Handle expanding tabs from collapsed state
+  const handleExpandTabs = useCallback(() => {
+    resetCollapseTimer();
+  }, [resetCollapseTimer]);
 
   return (
     <GlassTabs
       value={activeTab}
-      onValueChange={setActiveTab}
-      className={`h-screen ${currentTab?.bg || "bg-background"} pt-16 flex flex-col transition-all duration-500`}
+      onValueChange={handleTabChange}
+      className={`h-screen overflow-x-hidden ${currentTab?.bg || "bg-background"} pt-16 flex flex-col transition-all duration-500`}
     >
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
       {/* Content area - scrollable vertically */}
-      <div className="relative z-10 overflow-y-auto px-3 py-4 md:px-4 lg:px-6 pb-24" style={{ height: "calc(100vh - 4rem - 80px)" }}>
+      <div className="relative z-10 overflow-y-auto overflow-x-hidden px-3 py-4 md:px-4 lg:px-6 pb-24" style={{ height: "calc(100vh - 4rem - 80px)" }}>
 
         {/* ==================== OVERVIEW TAB ==================== */}
         <GlassTabsContent value="overview" className="m-0 mt-0">
@@ -824,14 +862,53 @@ export default function DashboardPage() {
 
       {/* Floating Tab Bar */}
       <div className="sticky bottom-0 z-20 flex justify-center pb-6 pt-4">
-        <GlassTabsList className="flex items-center justify-center gap-1 px-2">
-          {tabs.map((tab) => (
-            <GlassTabsTrigger key={tab.value} value={tab.value} className="group p-3">
-              <tab.icon className="h-4 w-4" />
-              <span className="ml-2 hidden group-data-[state=active]:inline">{tab.label}</span>
-            </GlassTabsTrigger>
-          ))}
-        </GlassTabsList>
+        {/* Collapsed state - single floating button */}
+        <button
+          onClick={handleExpandTabs}
+          className={`
+            transition-all duration-300 ease-out
+            ${tabsExpanded ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'}
+            relative p-4 rounded-2xl
+            bg-white/10 backdrop-blur-xl border border-white/20
+            shadow-[0_4px_16px_rgba(0,0,0,0.2)]
+            hover:bg-white/15 active:scale-95
+            before:absolute before:inset-0 before:rounded-2xl
+            before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none
+          `}
+          aria-label="Expand navigation"
+        >
+          <div className="relative z-10 flex items-center gap-2">
+            {(() => {
+              const TabIcon = currentTab?.icon || LayoutDashboard;
+              return <TabIcon className="h-5 w-5 text-white" />;
+            })()}
+            <ChevronUp className="h-4 w-4 text-white/60" />
+          </div>
+          {/* Glow effect */}
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
+        </button>
+
+        {/* Expanded state - full tab bar */}
+        <div
+          className={`
+            transition-all duration-300 ease-out origin-bottom
+            ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
+          `}
+        >
+          <GlassTabsList className="flex items-center justify-center gap-1 px-2">
+            {tabs.map((tab) => (
+              <GlassTabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="group p-3 transition-all duration-200"
+                onClick={resetCollapseTimer}
+              >
+                <tab.icon className="h-4 w-4" />
+                <span className="ml-2 hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
+              </GlassTabsTrigger>
+            ))}
+          </GlassTabsList>
+        </div>
       </div>
     </GlassTabs>
   );
