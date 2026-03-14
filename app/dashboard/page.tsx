@@ -309,11 +309,12 @@ export default function DashboardPage() {
               <MultiGaugeWidget
                 title="System Resources"
                 gauges={[
-                  { label: "CPU", value: systemStats.cpu, unit: "%", color: "cyan" },
                   { label: "RAM", value: systemStats.memory.percentage, unit: "%", color: "purple" },
-                  { label: "Disk", value: systemStats.disk.percentage, unit: "%", color: "blue" },
+                  { label: "CPU", value: systemStats.cpu, unit: "%", color: "cyan" },
+                  { label: "Disk", value: systemStats.disk.percentage, unit: "%", color: "green" },
                 ]}
-                glowColor="cyan"
+                glowColor="green"
+                size="sm"
               />
               <MultiProgressWidget
                 title="Resource Details"
