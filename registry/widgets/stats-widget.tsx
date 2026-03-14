@@ -461,27 +461,27 @@ function MultiProgressWidget({
   return (
     <GlassWidgetBase
       className={cn("flex flex-col", className)}
-      size="md"
+      size="sm"
       width="lg"
       glowColor={glowColor}
     >
       {title && (
-        <div className="text-white/60 text-sm mb-4">{title}</div>
+        <div className="text-white/60 text-xs mb-2">{title}</div>
       )}
-      <div className="space-y-4">
+      <div className="space-y-2">
         {items.map((item, index) => {
           const percentage = Math.min((item.value / (item.max || 100)) * 100, 100);
           const color = item.color || glowColor;
 
           return (
-            <div key={index} className="space-y-1">
+            <div key={index} className="space-y-0.5">
               <div className="flex items-center justify-between">
-                <span className="text-white/70 text-sm">{item.label}</span>
-                <span className="text-white text-sm font-medium">
-                  {item.value}{item.unit && <span className="text-white/50 ml-1">{item.unit}</span>}
+                <span className="text-white/70 text-xs">{item.label}</span>
+                <span className="text-white text-xs font-medium">
+                  {item.value}{item.unit && <span className="text-white/50 ml-0.5">{item.unit}</span>}
                 </span>
               </div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                 <div
                   className={cn(
                     "h-full rounded-full bg-linear-to-r transition-all duration-500",
