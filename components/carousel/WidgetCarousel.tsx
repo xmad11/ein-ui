@@ -85,7 +85,6 @@ export function WidgetCarousel({
       <div
         className="overflow-hidden"
         ref={emblaRef}
-        style={{ touchAction: "pan-x" }}
       >
         <div className={cn("flex", gapClass)}>
           {children.map((child, index) => (

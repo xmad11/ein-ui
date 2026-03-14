@@ -294,8 +294,8 @@ export default function DashboardPage() {
     >
       <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      {/* Content area - scrollable vertically, no horizontal scroll */}
-      <div className="flex-1 relative z-10 overflow-y-auto overflow-x-hidden px-3 py-4 md:px-4 lg:px-6 pb-24">
+      {/* Content area - scrollable vertically */}
+      <div className="relative z-10 overflow-y-auto px-3 py-4 md:px-4 lg:px-6 pb-24" style={{ height: "calc(100vh - 4rem - 80px)" }}>
 
         {/* ==================== OVERVIEW TAB ==================== */}
         <GlassTabsContent value="overview" className="m-0 mt-0">
