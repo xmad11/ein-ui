@@ -33,7 +33,9 @@ import {
   ArrowDownRight,
   Bell,
   Folder,
+  X,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { GlassTabs, GlassTabsList, GlassTabsTrigger, GlassTabsContent } from "@/registry/liquid-glass/glass-tabs";
 import { GlassBadge } from "@/registry/liquid-glass/glass-badge";
 import { GlassProgress } from "@/registry/liquid-glass/glass-progress";
@@ -49,6 +51,15 @@ import { GlassInput } from "@/registry/liquid-glass/glass-input";
 import { Label } from "@/components/ui/label";
 import { WidgetCarousel } from "@/components/carousel/WidgetCarousel";
 import { GlassWidgetBase } from "@/registry/widgets/base-widget";
+
+// Agent AI Components
+import {
+  AudioVisualizerBar,
+  AgentControlBar,
+  AgentChatTranscript,
+  type AgentState,
+  type ChatMessage,
+} from "@/registry/agents-ui";
 
 // Widgets
 import { StatCard, MetricStat, CircularProgressStat, MultiGaugeWidget, MultiProgressWidget } from "@/registry/widgets/stats-widget";
@@ -341,6 +352,16 @@ export default function DashboardPage() {
   const collapseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
 
+  // Chat sheet state
+  const [chatSheetOpen, setChatSheetOpen] = useState(false);
+  const [agentState, setAgentState] = useState<AgentState>("listening");
+  const [isMicEnabled, setIsMicEnabled] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+
+  // Long-press visualizer state
+  const [showVisualizer, setShowVisualizer] = useState(false);
+  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const currentTab = tabs.find((t) => t.value === activeTab);
 
   const resetCollapseTimer = useCallback(() => {
@@ -376,6 +397,61 @@ export default function DashboardPage() {
   const handleExpandTabs = useCallback(() => {
     resetCollapseTimer();
   }, [resetCollapseTimer]);
+
+  // Long-press handlers for collapsed button
+  const handleLongPressStart = useCallback(() => {
+    longPressTimerRef.current = setTimeout(() => {
+      setShowVisualizer(true);
+      setAgentState("listening");
+    }, 500); // 500ms to trigger long-press
+  }, []);
+
+  const handleLongPressEnd = useCallback(() => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+    setShowVisualizer(false);
+    setAgentState("idle");
+  }, []);
+
+  // Chat sheet handlers
+  const handleOpenChat = useCallback(() => {
+    setChatSheetOpen(true);
+    setAgentState("listening");
+  }, []);
+
+  const handleCloseChat = useCallback(() => {
+    setChatSheetOpen(false);
+    setAgentState("idle");
+  }, []);
+
+  const handleSendMessage = useCallback((message: string) => {
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      content: message,
+      timestamp: new Date(),
+      sender: "user",
+    };
+    setChatMessages((prev) => [...prev, newMessage]);
+
+    // Simulate agent response
+    setAgentState("thinking");
+    setTimeout(() => {
+      setAgentState("speaking");
+      const agentResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: `I received your message. This is a demo response.`,
+        timestamp: new Date(),
+        sender: "agent",
+      };
+      setChatMessages((prev) => [...prev, agentResponse]);
+      setTimeout(() => setAgentState("listening"), 2000);
+    }, 1500);
+  }, []);
+
+  const handleMicToggle = useCallback(() => {
+    setIsMicEnabled((prev) => !prev);
+  }, []);
 
   return (
     <>
@@ -1104,9 +1180,14 @@ export default function DashboardPage() {
 
       {/* Floating Tab Bar - fixed at bottom of screen */}
       <div className="fixed bottom-0 left-0 right-0 z-20 flex justify-center pb-4 pt-2 pointer-events-none">
-        {/* Collapsed state - single floating button (no arrow) */}
+        {/* Collapsed state - single floating button with long-press support */}
         <button
           onClick={handleExpandTabs}
+          onMouseDown={handleLongPressStart}
+          onMouseUp={handleLongPressEnd}
+          onMouseLeave={handleLongPressEnd}
+          onTouchStart={handleLongPressStart}
+          onTouchEnd={handleLongPressEnd}
           className={`
             transition-all duration-300 ease-out pointer-events-auto
             ${tabsExpanded ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'}
@@ -1120,36 +1201,149 @@ export default function DashboardPage() {
           aria-label="Expand navigation"
         >
           <div className="relative z-10 flex items-center justify-center">
-            {(() => {
-              const TabIcon = currentTab?.icon || LayoutDashboard;
-              return <TabIcon className="h-4 w-4 text-white" />;
-            })()}
+            {showVisualizer ? (
+              <AudioVisualizerBar state={agentState} size="icon" />
+            ) : (
+              (() => {
+                const TabIcon = currentTab?.icon || LayoutDashboard;
+                return <TabIcon className="h-4 w-4 text-white" />;
+              })()
+            )}
           </div>
           <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
         </button>
 
-        {/* Expanded state - full tab bar centered, smaller for mobile */}
+        {/* Expanded state - full tab bar centered with chat icon above overview */}
         <div
           className={`
             absolute left-1/2 -translate-x-1/2 transition-all duration-300 ease-out origin-bottom pointer-events-auto
             ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}
           `}
         >
-          <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">
-            {tabs.map((tab) => (
-              <GlassTabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="group p-2 transition-all duration-200 rounded-lg"
-                onClick={resetCollapseTimer}
+          <div className="flex flex-col items-center gap-1">
+            {/* Chat icon above overview tab */}
+            {tabsExpanded && (
+              <button
+                onClick={handleOpenChat}
+                className="p-2 rounded-lg bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                aria-label="Open chat"
               >
-                <tab.icon className="h-3.5 w-3.5" />
-                <span className="ml-1.5 text-xs hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
-              </GlassTabsTrigger>
-            ))}
-          </GlassTabsList>
+                <MessageSquare className="h-4 w-4 text-white" />
+              </button>
+            )}
+            <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">
+              {tabs.map((tab) => (
+                <GlassTabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="group p-2 transition-all duration-200 rounded-lg"
+                  onClick={resetCollapseTimer}
+                >
+                  <tab.icon className="h-3.5 w-3.5" />
+                  <span className="ml-1.5 text-xs hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
+                </GlassTabsTrigger>
+              ))}
+            </GlassTabsList>
+          </div>
         </div>
       </div>
+
+      {/* Chat Bottom Sheet */}
+      <AnimatePresence>
+        {chatSheetOpen && (
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="fixed inset-x-0 bottom-0 z-50 bg-slate-950/95 backdrop-blur-xl border-t border-white/10 rounded-t-3xl overflow-hidden"
+            style={{ height: "80vh" }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-cyan-500/20">
+                  <MessageSquare className="h-5 w-5 text-cyan-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">AI Assistant</h3>
+                  <p className="text-white/50 text-sm">Voice-enabled chat</p>
+                </div>
+              </div>
+              <button
+                onClick={handleCloseChat}
+                className="p-2 rounded-lg bg-white/10 hover:bg-white/15 transition-colors"
+              >
+                <X className="h-5 w-5 text-white" />
+              </button>
+            </div>
+
+            {/* Audio Visualizer */}
+            <div className="flex justify-center py-6 border-b border-white/10">
+              <AudioVisualizerBar state={agentState} size="lg" />
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4" style={{ height: "calc(80vh - 280px)" }}>
+              <AgentChatTranscript
+                messages={chatMessages}
+                agentState={agentState}
+                agentName="XMAD AI"
+              />
+            </div>
+
+            {/* Control Bar */}
+            <div className="p-4 border-t border-white/10">
+              <AgentControlBar
+                isMicEnabled={isMicEnabled}
+                isCameraEnabled={false}
+                isScreenShareEnabled={false}
+                isConnected={true}
+                showChat={false}
+                onMicToggle={handleMicToggle}
+                onDisconnect={handleCloseChat}
+              />
+              {/* Text Input */}
+              <div className="mt-3 flex gap-2">
+                <GlassInput
+                  placeholder="Type a message..."
+                  className="flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && e.currentTarget.value) {
+                      handleSendMessage(e.currentTarget.value);
+                      e.currentTarget.value = "";
+                    }
+                  }}
+                />
+                <GlassButton
+                  onClick={() => {
+                    const input = document.querySelector('input[placeholder="Type a message..."]') as HTMLInputElement;
+                    if (input?.value) {
+                      handleSendMessage(input.value);
+                      input.value = "";
+                    }
+                  }}
+                >
+                  <ArrowUpRight className="h-4 w-4" />
+                </GlassButton>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Backdrop for chat sheet */}
+      <AnimatePresence>
+        {chatSheetOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleCloseChat}
+            className="fixed inset-0 z-40 bg-black/50"
+          />
+        )}
+      </AnimatePresence>
     </GlassTabs>
     </>
   );
