@@ -1133,8 +1133,8 @@ export default function DashboardPage() {
         {/* Expanded state - full tab bar centered, smaller for mobile */}
         <div
           className={`
-            transition-all duration-300 ease-out origin-bottom flex justify-center pointer-events-auto
-            ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
+            absolute left-1/2 -translate-x-1/2 transition-all duration-300 ease-out origin-bottom pointer-events-auto
+            ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}
           `}
         >
           <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">

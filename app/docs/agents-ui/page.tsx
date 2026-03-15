@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
@@ -14,30 +14,27 @@ import {
   type VisualizerType,
 } from "@/registry/agents-ui";
 
-// Initial messages factory - called once on module load
-const createInitialMessages = (): ChatMessage[] => {
-  const now = Date.now();
-  return [
-    {
-      id: "1",
-      content: "Hello! I&apos;m your AI assistant. How can I help you today?",
-      timestamp: new Date(now - 60000),
-      sender: "agent",
-    },
-    {
-      id: "2",
-      content: "Hi! Can you tell me about the weather?",
-      timestamp: new Date(now - 45000),
-      sender: "user",
-    },
-    {
-      id: "3",
-      content: "I&apos;d be happy to help with weather information! However, I don&apos;t have access to real-time weather data in this demo. In a full implementation, I could fetch weather data from an API and provide you with current conditions and forecasts.",
-      timestamp: new Date(now - 30000),
-      sender: "agent",
-    },
-  ];
-};
+// Initial messages with fixed timestamps
+const initialMessages: ChatMessage[] = [
+  {
+    id: "1",
+    content: "Hello! I&apos;m your AI assistant. How can I help you today?",
+    timestamp: new Date("2024-01-01T12:00:00"),
+    sender: "agent",
+  },
+  {
+    id: "2",
+    content: "Hi! Can you tell me about the weather?",
+    timestamp: new Date("2024-01-01T12:01:00"),
+    sender: "user",
+  },
+  {
+    id: "3",
+    content: "I&apos;d be happy to help with weather information! However, I don&apos;t have access to real-time weather data in this demo. In a full implementation, I could fetch weather data from an API and provide you with current conditions and forecasts.",
+    timestamp: new Date("2024-01-01T12:02:00"),
+    sender: "agent",
+  },
+];
 
 export default function AgentsUIPage() {
   const [agentState, setAgentState] = useState<AgentState>("listening");
@@ -47,7 +44,6 @@ export default function AgentsUIPage() {
   const [isScreenShareEnabled, setIsScreenShareEnabled] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
 
-  const initialMessages = useMemo(() => createInitialMessages(), []);
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
 
   const handleSendMessage = useCallback((message: string) => {
