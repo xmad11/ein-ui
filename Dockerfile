@@ -28,6 +28,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 # Build the Next.js application
+ENV PATH="/app/node_modules/.bin:${PATH}"
 RUN bun run build
 
 # =========================================
