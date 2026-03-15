@@ -1133,7 +1133,7 @@ export default function DashboardPage() {
         {/* Expanded state - full tab bar centered, smaller for mobile */}
         <div
           className={`
-            w-full transition-all duration-300 ease-out origin-bottom flex justify-center pointer-events-auto
+            transition-all duration-300 ease-out origin-bottom flex justify-center pointer-events-auto
             ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
           `}
         >
