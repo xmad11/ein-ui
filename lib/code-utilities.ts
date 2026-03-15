@@ -138,7 +138,7 @@ export function parseHighlightLines(highlightSpec: string | number[]): number[] 
 /**
  * Format code with consistent indentation
  */
-export function normalizeIndentation(code: string, spaces: number = 2): string {
+export function normalizeIndentation(code: string, _spaces: number = 2): string {
   const lines = code.split("\n")
   const minIndent = lines.reduce((min, line) => {
     if (!line.trim()) return min

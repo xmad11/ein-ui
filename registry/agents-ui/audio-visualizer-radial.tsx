@@ -61,7 +61,7 @@ export function AudioVisualizerRadial({
       case "thinking": return Infinity;
       default: return 1000;
     }
-  }, [state, _barCount]);
+  }, [state]);
 
   const distanceFromCenter = useMemo(() => {
     if (radius) return radius;

@@ -53,7 +53,7 @@ export function PageEditor({
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   // Side menu state
-  const [showSideMenu, setShowSideMenu] = useState(false)
+  const [_showSideMenu, setShowSideMenu] = useState(false)
 
   // Get selected component data
   const selectedComponentData = pageConfig.layout.components.find(c => c.id === selectedComponent)

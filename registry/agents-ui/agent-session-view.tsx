@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useCallback, type ComponentProps } from "react";
+import React, { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { AudioVisualizerBar } from "./audio-visualizer-bar";
 import { AudioVisualizerRadial } from "./audio-visualizer-radial";
 import { AudioVisualizerGrid } from "./audio-visualizer-grid";
-import { AgentControlBar, type AgentControlBarProps } from "./agent-control-bar";
+import { AgentControlBar } from "./agent-control-bar";
 import { AgentChatTranscript, type ChatMessage } from "./agent-chat-transcript";
 import { type AgentState } from "./hooks/use-audio-visualizer";
 

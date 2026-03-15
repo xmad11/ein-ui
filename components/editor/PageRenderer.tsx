@@ -63,7 +63,7 @@ export function PageRenderer({
   onComponentUpdate,
   onCommitHistory,
   onOpenPropertyPanel,
-  readOnly = false
+  readOnly: _readOnly = false
 }: PageRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [dragState, setDragState] = useState<{

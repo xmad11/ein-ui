@@ -7,8 +7,8 @@ import { MotionProvider } from "@/components/motion-config";
 import { SITE_URL, generateSoftwareLibraryJsonLd } from "@/lib/seo";
 import "./globals.css";
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+Geist({ subsets: ["latin"] });
+Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

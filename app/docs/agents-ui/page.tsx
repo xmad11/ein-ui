@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
@@ -9,11 +9,35 @@ import {
   AudioVisualizerRadial,
   AudioVisualizerGrid,
   AgentControlBar,
-  AgentChatTranscript,
   type AgentState,
   type ChatMessage,
   type VisualizerType,
 } from "@/registry/agents-ui";
+
+// Initial messages factory - called once on module load
+const createInitialMessages = (): ChatMessage[] => {
+  const now = Date.now();
+  return [
+    {
+      id: "1",
+      content: "Hello! I&apos;m your AI assistant. How can I help you today?",
+      timestamp: new Date(now - 60000),
+      sender: "agent",
+    },
+    {
+      id: "2",
+      content: "Hi! Can you tell me about the weather?",
+      timestamp: new Date(now - 45000),
+      sender: "user",
+    },
+    {
+      id: "3",
+      content: "I&apos;d be happy to help with weather information! However, I don&apos;t have access to real-time weather data in this demo. In a full implementation, I could fetch weather data from an API and provide you with current conditions and forecasts.",
+      timestamp: new Date(now - 30000),
+      sender: "agent",
+    },
+  ];
+};
 
 export default function AgentsUIPage() {
   const [agentState, setAgentState] = useState<AgentState>("listening");
@@ -23,32 +47,8 @@ export default function AgentsUIPage() {
   const [isScreenShareEnabled, setIsScreenShareEnabled] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-
-  useEffect(() => {
-    // Initialize messages on client side
-    const now = Date.now();
-    setMessages([
-      {
-        id: "1",
-        content: "Hello! I'm your AI assistant. How can I help you today?",
-        timestamp: new Date(now - 60000),
-        sender: "agent",
-      },
-      {
-        id: "2",
-        content: "Hi! Can you tell me about the weather?",
-        timestamp: new Date(now - 45000),
-        sender: "user",
-      },
-      {
-        id: "3",
-        content: "I'd be happy to help with weather information! However, I don't have access to real-time weather data in this demo. In a full implementation, I could fetch weather data from an API and provide you with current conditions and forecasts.",
-        timestamp: new Date(now - 30000),
-        sender: "agent",
-      },
-    ]);
-  }, []);
+  const initialMessages = useMemo(() => createInitialMessages(), []);
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
 
   const handleSendMessage = useCallback((message: string) => {
     const newMessage: ChatMessage = {
@@ -104,7 +104,7 @@ export default function AgentsUIPage() {
             </h1>
             <p className="text-white/60 text-lg max-w-2xl mx-auto">
               Beautiful glass-morphism components for building voice agent interfaces.
-              Inspired by LiveKit's Agents UI with a liquid glass aesthetic.
+              Inspired by LiveKit&apos;s Agents UI with a liquid glass aesthetic.
             </p>
           </motion.div>
         </div>

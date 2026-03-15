@@ -22,18 +22,13 @@ import {
   Play,
   FileText,
   Globe,
-  Cog,
-  BarChart3,
   Gauge,
   Binary,
   Terminal,
   Lock,
   RefreshCw,
-  Users,
-  DollarSign,
   Plus,
   Search,
-  MoreHorizontal,
   ArrowUpRight,
   ArrowDownRight,
   Bell,
@@ -51,15 +46,14 @@ import {
 } from "@/registry/liquid-glass/glass-card";
 import { GlassButton } from "@/registry/liquid-glass/glass-button";
 import { GlassInput } from "@/registry/liquid-glass/glass-input";
-import { GlassAvatar, GlassAvatarFallback } from "@/registry/liquid-glass/glass-avatar";
 import { Label } from "@/components/ui/label";
 import { WidgetCarousel } from "@/components/carousel/WidgetCarousel";
 import { GlassWidgetBase } from "@/registry/widgets/base-widget";
 
 // Widgets
-import { StatCard, MetricStat, ComparisonStat, CircularProgressStat, MultiGaugeWidget, MultiProgressWidget } from "@/registry/widgets/stats-widget";
+import { StatCard, MetricStat, CircularProgressStat, MultiGaugeWidget, MultiProgressWidget } from "@/registry/widgets/stats-widget";
 import { HourlyWeatherWidget, ForecastWidget, ForecastWeatherWidget, CurrentWeatherWidget } from "@/registry/widgets/weather-widget";
-import { StockTickerWidget, CompactStockWidget, CryptoWidget, MarketOverviewWidget } from "@/registry/widgets/stock-widget";
+import { StockTickerWidget, CryptoWidget } from "@/registry/widgets/stock-widget";
 import { DigitalClockWidget, WorldClockWidget, StopwatchWidget, TimerWidget, AnalogClockWidget } from "@/registry/widgets/clock-widget";
 import { CompactCalendarWidget, EventsCalendarWidget } from "@/registry/widgets/calendar-widget";
 
@@ -247,17 +241,17 @@ function TaskCard({
   progress: number;
 }) {
   const statusConfig = {
-    running: { icon: Play, color: "text-emerald-400", glow: "green" },
-    pending: { icon: Clock, color: "text-amber-400", glow: "amber" },
-    completed: { icon: CheckCircle2, color: "text-cyan-400", glow: "cyan" },
-    paused: { icon: Pause, color: "text-purple-400", glow: "purple" },
+    running: { icon: Play, color: "text-emerald-400", glow: "green" as const },
+    pending: { icon: Clock, color: "text-amber-400", glow: "amber" as const },
+    completed: { icon: CheckCircle2, color: "text-cyan-400", glow: "cyan" as const },
+    paused: { icon: Pause, color: "text-purple-400", glow: "purple" as const },
   };
 
   const config = statusConfig[status];
   const Icon = config.icon;
 
   return (
-    <GlassWidgetBase size="sm" width="sm" glowColor={config.glow as any}>
+    <GlassWidgetBase size="sm" width="sm" glowColor={config.glow}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-white text-sm font-medium truncate">{name}</span>
         <Icon className={`h-4 w-4 ${config.color}`} />
@@ -347,6 +341,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const [tabsExpanded, setTabsExpanded] = useState(true);
   const collapseTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMount = useRef(true);
 
   const currentTab = tabs.find((t) => t.value === activeTab);
 
@@ -361,13 +356,19 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    resetCollapseTimer();
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      // Start the collapse timer on initial mount
+      collapseTimerRef.current = setTimeout(() => {
+        setTabsExpanded(false);
+      }, TAB_COLLAPSE_DELAY);
+    }
     return () => {
       if (collapseTimerRef.current) {
         clearTimeout(collapseTimerRef.current);
       }
     };
-  }, [resetCollapseTimer]);
+  }, []);
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value);

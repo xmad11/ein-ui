@@ -1,14 +1,12 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Cpu, 
-  HardDrive, 
-  Wifi, 
+import {
+  Cpu,
+  HardDrive,
+  Wifi,
   Shield,
   CheckCircle2,
-  AlertCircle,
-  XCircle,
   Settings,
   Power,
   RefreshCw

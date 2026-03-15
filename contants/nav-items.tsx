@@ -139,7 +139,7 @@ export function generateNavigation(): NavSection[] {
   const dataDisplayComponents = Object.values(componentRegistry).filter((c) => c.category === "data-display")
   const overlayComponents = Object.values(componentRegistry).filter((c) => c.category === "overlays")
   const innovativeComponents = Object.values(componentRegistry).filter((c) => c.category === "innovative")
-  const timeComponents = Object.values(componentRegistry).filter((c) => c.category === "time")
+  const _timeComponents = Object.values(componentRegistry).filter((c) => c.category === "time")
   const widgetsComponents = Object.values(componentRegistry).filter((c) => c.category === "widgets")
 
   const componentSections: NavSection[] = [

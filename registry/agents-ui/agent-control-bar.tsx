@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, type ComponentProps } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Mic,
   MicOff,
@@ -12,8 +12,6 @@ import {
   MessageSquare,
   Send,
   Loader2,
-  Settings,
-  MoreVertical,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";

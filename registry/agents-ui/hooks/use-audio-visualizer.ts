@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 export type AgentState = "connecting" | "initializing" | "listening" | "thinking" | "speaking" | "idle";
 
@@ -18,47 +18,48 @@ function generateListeningSequenceBar(columns: number): number[][] {
   return [[center], [-1]];
 }
 
+function getSequenceForState(state: AgentState | undefined, columns: number): number[][] {
+  if (state === "thinking") {
+    return generateListeningSequenceBar(columns);
+  } else if (state === "connecting" || state === "initializing") {
+    return [...generateConnectingSequenceBar(columns)];
+  } else if (state === "listening") {
+    return generateListeningSequenceBar(columns);
+  } else if (state === undefined || state === "speaking") {
+    return [new Array(columns).fill(0).map((_, idx) => idx)];
+  }
+  return [[]];
+}
+
 export function useAudioVisualizerBarAnimator(
   state: AgentState | undefined,
   columns: number,
   interval: number
 ): number[] {
   const [index, setIndex] = useState(0);
-  const [sequence, setSequence] = useState<number[][]>([[]]);
+  const sequence = useMemo(() => getSequenceForState(state, columns), [state, columns]);
 
-  useEffect(() => {
-    if (state === "thinking") {
-      setSequence(generateListeningSequenceBar(columns));
-    } else if (state === "connecting" || state === "initializing") {
-      setSequence([...generateConnectingSequenceBar(columns)]);
-    } else if (state === "listening") {
-      setSequence(generateListeningSequenceBar(columns));
-    } else if (state === undefined || state === "speaking") {
-      setSequence([new Array(columns).fill(0).map((_, idx) => idx)]);
-    } else {
-      setSequence([[]]);
-    }
-    setIndex(0);
-  }, [state, columns]);
-
-  const animationFrameId = useRef<number | null>(null);
   useEffect(() => {
     let startTime = performance.now();
+    let animationId: number | null = null;
+
     const animate = (time: DOMHighResTimeStamp) => {
       const timeElapsed = time - startTime;
       if (timeElapsed >= interval) {
         setIndex((prev) => prev + 1);
         startTime = time;
       }
-      animationFrameId.current = requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
-    animationFrameId.current = requestAnimationFrame(animate);
+
+    animationId = requestAnimationFrame(animate);
+
     return () => {
-      if (animationFrameId.current !== null) {
-        cancelAnimationFrame(animationFrameId.current);
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
       }
     };
-  }, [interval, columns, state, sequence.length]);
+  }, [interval]);
 
   return sequence[index % sequence.length] ?? [];
 }
@@ -97,47 +98,48 @@ function generateListeningSequenceRadial(columns: number): number[][] {
   ]);
 }
 
+function getSequenceForStateRadial(state: AgentState | undefined, barCount: number): number[][] {
+  if (state === "thinking") {
+    return generateListeningSequenceRadial(barCount);
+  } else if (state === "connecting" || state === "initializing") {
+    return generateConnectingSequenceRadial(barCount);
+  } else if (state === "listening") {
+    return generateListeningSequenceRadial(barCount);
+  } else if (state === undefined || state === "speaking") {
+    return [new Array(barCount).fill(0).map((_, idx) => idx)];
+  }
+  return [[]];
+}
+
 export function useAudioVisualizerRadialAnimator(
   state: AgentState | undefined,
   barCount: number,
   interval: number
 ): number[] {
   const [index, setIndex] = useState(0);
-  const [sequence, setSequence] = useState<number[][]>([[]]);
+  const sequence = useMemo(() => getSequenceForStateRadial(state, barCount), [state, barCount]);
 
-  useEffect(() => {
-    if (state === "thinking") {
-      setSequence(generateListeningSequenceRadial(barCount));
-    } else if (state === "connecting" || state === "initializing") {
-      setSequence(generateConnectingSequenceRadial(barCount));
-    } else if (state === "listening") {
-      setSequence(generateListeningSequenceRadial(barCount));
-    } else if (state === undefined || state === "speaking") {
-      setSequence([new Array(barCount).fill(0).map((_, idx) => idx)]);
-    } else {
-      setSequence([[]]);
-    }
-    setIndex(0);
-  }, [state, barCount]);
-
-  const animationFrameId = useRef<number | null>(null);
   useEffect(() => {
     let startTime = performance.now();
+    let animationId: number | null = null;
+
     const animate = (time: DOMHighResTimeStamp) => {
       const timeElapsed = time - startTime;
       if (timeElapsed >= interval) {
         setIndex((prev) => prev + 1);
         startTime = time;
       }
-      animationFrameId.current = requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
-    animationFrameId.current = requestAnimationFrame(animate);
+
+    animationId = requestAnimationFrame(animate);
+
     return () => {
-      if (animationFrameId.current !== null) {
-        cancelAnimationFrame(animationFrameId.current);
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
       }
     };
-  }, [interval, barCount, state, sequence.length]);
+  }, [interval]);
 
   return sequence[index % sequence.length] ?? [];
 }
@@ -192,6 +194,21 @@ function generateThinkingSequenceGrid(rows: number, columns: number): Coordinate
   return seq;
 }
 
+function getSequenceForStateGrid(state: AgentState, rows: number, columns: number, radius: number): Coordinate[] {
+  const clampedRadius = radius
+    ? Math.min(radius, Math.floor(Math.max(rows, columns) / 2))
+    : Math.floor(Math.max(rows, columns) / 2);
+
+  if (state === "thinking") {
+    return generateThinkingSequenceGrid(rows, columns);
+  } else if (state === "connecting" || state === "initializing") {
+    return [...generateConnectingSequenceGrid(rows, columns, clampedRadius)];
+  } else if (state === "listening") {
+    return generateListeningSequenceGrid(rows, columns);
+  }
+  return [{ x: Math.floor(columns / 2), y: Math.floor(rows / 2) }];
+}
+
 export function useAudioVisualizerGridAnimator(
   state: AgentState,
   rows: number,
@@ -200,34 +217,21 @@ export function useAudioVisualizerGridAnimator(
   radius?: number
 ): Coordinate {
   const [index, setIndex] = useState(0);
-  const [sequence, setSequence] = useState<Coordinate[]>(() => [
-    { x: Math.floor(columns / 2), y: Math.floor(rows / 2) },
-  ]);
-
-  useEffect(() => {
-    const clampedRadius = radius
-      ? Math.min(radius, Math.floor(Math.max(rows, columns) / 2))
-      : Math.floor(Math.max(rows, columns) / 2);
-
-    if (state === "thinking") {
-      setSequence(generateThinkingSequenceGrid(rows, columns));
-    } else if (state === "connecting" || state === "initializing") {
-      setSequence([...generateConnectingSequenceGrid(rows, columns, clampedRadius)]);
-    } else if (state === "listening") {
-      setSequence(generateListeningSequenceGrid(rows, columns));
-    } else {
-      setSequence([{ x: Math.floor(columns / 2), y: Math.floor(rows / 2) }]);
-    }
-    setIndex(0);
-  }, [state, rows, columns, radius]);
+  const effectiveRadius = radius ?? Math.floor(Math.max(rows, columns) / 2);
+  const sequence = useMemo(
+    () => getSequenceForStateGrid(state, rows, columns, effectiveRadius),
+    [state, rows, columns, effectiveRadius]
+  );
 
   useEffect(() => {
     if (state === "speaking") return;
-    const indexInterval = setInterval(() => {
+
+    const intervalId = setInterval(() => {
       setIndex((prev) => prev + 1);
     }, interval);
-    return () => clearInterval(indexInterval);
-  }, [interval, columns, rows, state, sequence.length]);
+
+    return () => clearInterval(intervalId);
+  }, [interval, state]);
 
   return sequence[index % sequence.length] ?? { x: Math.floor(columns / 2), y: Math.floor(rows / 2) };
 }

@@ -62,7 +62,7 @@ const GlassSkeleton = React.forwardRef<HTMLDivElement, GlassSkeletonProps>(
         className={cn(baseClasses, variantClasses[variant], className)}
         // Ensure onDrag prop is not forwarded to motion.div
         {...(() => {
-          const { onDrag, ...rest } = props as any // eslint-disable-line @typescript-eslint/no-explicit-any
+          const { onDrag: _onDrag, ...rest } = props as any // eslint-disable-line @typescript-eslint/no-explicit-any
           return rest
         })()}
         style={{

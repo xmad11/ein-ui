@@ -40,7 +40,7 @@ const GlassBreadcrumbLink = React.forwardRef<
   React.ComponentPropsWithoutRef<"a"> & {
     asChild?: boolean
   }
->(({ asChild, className, ...props }, ref) => {
+>(({ asChild: _asChild, className, ...props }, ref) => {
   return (
     <a
       ref={ref}

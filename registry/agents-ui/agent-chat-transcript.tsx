@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState, type ComponentProps } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { ArrowDown, Bot, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { memo, useMemo, type ComponentProps, type CSSProperties } from "react";
-import { type VariantProps, cva } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { useAudioVisualizerGridAnimator, type AgentState, type Coordinate } from "./hooks/use-audio-visualizer";
 
@@ -68,8 +68,6 @@ interface GridCellProps {
 
 const GridCell = memo(function GridCell({
   index,
-  state,
-  rowCount,
   columnCount,
   highlightedCoordinate,
   size,
