@@ -1205,37 +1205,21 @@ export default function DashboardPage() {
               ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
             `}
           >
-          {/* Chat icon above - only visible when expanded */}
-          <AnimatePresence>
-            {tabsExpanded && (
-              <motion.button
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.2 }}
-                onClick={handleOpenChat}
-                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-2 rounded-lg bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-colors shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-                aria-label="Open chat"
-              >
-                <MessageSquare className="h-4 w-4 text-white" />
-              </motion.button>
-            )}
-          </AnimatePresence>
-
-          {/* The tab bar */}
-          <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">
-            {tabs.map((tab) => (
-              <GlassTabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="group p-2 transition-all duration-200 rounded-lg"
-                onClick={resetCollapseTimer}
-              >
-                <tab.icon className="h-3.5 w-3.5" />
-                <span className="ml-1.5 text-xs hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
-              </GlassTabsTrigger>
-            ))}
-          </GlassTabsList>
+            {/* The tab bar */}
+            <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">
+              {tabs.map((tab) => (
+                <GlassTabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="group p-2 transition-all duration-200 rounded-lg"
+                  onClick={resetCollapseTimer}
+                >
+                  <tab.icon className="h-3.5 w-3.5" />
+                  <span className="ml-1.5 text-xs hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
+                </GlassTabsTrigger>
+              ))}
+            </GlassTabsList>
+          </div>
         </div>
       </div>
 
