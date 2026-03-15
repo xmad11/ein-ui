@@ -59,13 +59,11 @@ import { CompactCalendarWidget, EventsCalendarWidget } from "@/registry/widgets/
 
 // XMAD-Control Tabs Configuration
 const tabs = [
-  { value: "chat", icon: MessageSquare, label: "AI Chat", bg: "tab-bg-aurora" },
   { value: "memory", icon: Brain, label: "Memory", bg: "tab-bg-forest" },
   { value: "automation", icon: Zap, label: "Automation", bg: "tab-bg-sunset" },
   { value: "overview", icon: LayoutDashboard, label: "Overview", bg: "tab-bg-ocean" },
   { value: "screen", icon: Monitor, label: "Screen", bg: "tab-bg-midnight" },
   { value: "backups", icon: HardDrive, label: "Backups", bg: "tab-bg-ocean" },
-  { value: "settings", icon: Settings, label: "Settings", bg: "tab-bg-aurora" },
 ];
 
 // Tab collapse timing (in ms)
