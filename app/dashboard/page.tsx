@@ -1189,7 +1189,7 @@ export default function DashboardPage() {
           onTouchStart={handleLongPressStart}
           onTouchEnd={handleLongPressEnd}
           className={`
-            transition-all duration-300 ease-out pointer-events-auto
+            transition-all duration-300 ease-out pointer-events-auto select-none
             ${tabsExpanded ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'}
             relative p-3 rounded-xl
             bg-white/10 backdrop-blur-xl border border-white/20
@@ -1256,8 +1256,8 @@ export default function DashboardPage() {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed inset-x-0 bottom-0 z-50 bg-slate-950/95 backdrop-blur-xl border-t border-white/10 rounded-t-3xl overflow-hidden"
-            style={{ height: "80vh" }}
+            className="fixed inset-x-0 bottom-0 z-50 bg-slate-900/90 backdrop-blur-xl border-t border-white/10 rounded-t-3xl overflow-hidden"
+            style={{ height: "60vh" }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-white/10">
@@ -1284,7 +1284,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-4" style={{ height: "calc(80vh - 280px)" }}>
+            <div className="flex-1 overflow-y-auto p-4" style={{ height: "calc(60vh - 280px)" }}>
               <AgentChatTranscript
                 messages={chatMessages}
                 agentState={agentState}
