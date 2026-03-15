@@ -40,6 +40,7 @@ WORKDIR /app
 
 # Set environment to production
 ENV NODE_ENV=production
+ENV PATH="/app/node_modules/.bin:${PATH}"
 
 # Create non-root user for security
 RUN groupadd --gid 1001 nodejs && \
