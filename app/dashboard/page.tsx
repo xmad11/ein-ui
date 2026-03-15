@@ -338,7 +338,7 @@ function MiniStatWidget({
 // ==================== MAIN DASHBOARD ====================
 
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("automation");
   const [tabsExpanded, setTabsExpanded] = useState(true);
   const collapseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
