@@ -358,12 +358,6 @@ export default function DashboardPage() {
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
-  // Long-press visualizer state
-  const [showVisualizer, setShowVisualizer] = useState(false);
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const currentTab = tabs.find((t) => t.value === activeTab);
-
   const resetCollapseTimer = useCallback(() => {
     if (collapseTimerRef.current) {
       clearTimeout(collapseTimerRef.current);
@@ -393,26 +387,6 @@ export default function DashboardPage() {
     setActiveTab(value);
     resetCollapseTimer();
   }, [resetCollapseTimer]);
-
-  const handleExpandTabs = useCallback(() => {
-    resetCollapseTimer();
-  }, [resetCollapseTimer]);
-
-  // Long-press handlers for collapsed button
-  const handleLongPressStart = useCallback(() => {
-    longPressTimerRef.current = setTimeout(() => {
-      setShowVisualizer(true);
-      setAgentState("listening");
-    }, 500); // 500ms to trigger long-press
-  }, []);
-
-  const handleLongPressEnd = useCallback(() => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-    }
-    setShowVisualizer(false);
-    setAgentState("idle");
-  }, []);
 
   // Chat sheet handlers
   const handleOpenChat = useCallback(() => {
@@ -1178,73 +1152,41 @@ export default function DashboardPage() {
 
       </div>
 
-      {/* Floating Tab Bar - fixed at bottom of screen */}
+      {/* Floating Tab Bar - fixed at bottom of screen, never moves */}
       <div className="fixed bottom-0 left-0 right-0 z-20 flex justify-center pb-4 pt-2 pointer-events-none">
-        {/* Collapsed state - single floating button with long-press support */}
-        <button
-          onClick={handleExpandTabs}
-          onMouseDown={handleLongPressStart}
-          onMouseUp={handleLongPressEnd}
-          onMouseLeave={handleLongPressEnd}
-          onTouchStart={handleLongPressStart}
-          onTouchEnd={handleLongPressEnd}
-          className={`
-            transition-all duration-300 ease-out pointer-events-auto select-none
-            ${tabsExpanded ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'}
-            relative p-3 rounded-xl
-            bg-white/10 backdrop-blur-xl border border-white/20
-            shadow-[0_4px_16px_rgba(0,0,0,0.2)]
-            hover:bg-white/15 active:scale-95
-            before:absolute before:inset-0 before:rounded-xl
-            before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none
-          `}
-          aria-label="Expand navigation"
-        >
-          <div className="relative z-10 flex items-center justify-center">
-            {showVisualizer ? (
-              <AudioVisualizerBar state={agentState} size="icon" />
-            ) : (
-              (() => {
-                const TabIcon = currentTab?.icon || LayoutDashboard;
-                return <TabIcon className="h-4 w-4 text-white" />;
-              })()
-            )}
-          </div>
-          <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
-        </button>
-
-        {/* Expanded state - full tab bar centered with chat icon above overview */}
-        <div
-          className={`
-            absolute left-1/2 -translate-x-1/2 transition-all duration-300 ease-out origin-bottom pointer-events-auto
-            ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}
-          `}
-        >
-          <div className="flex flex-col items-center gap-1">
-            {/* Chat icon above overview tab */}
+        {/* Single container that stays in place */}
+        <div className="relative pointer-events-auto">
+          {/* Chat icon above - only visible when expanded */}
+          <AnimatePresence>
             {tabsExpanded && (
-              <button
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.2 }}
                 onClick={handleOpenChat}
-                className="p-2 rounded-lg bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-2 rounded-lg bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-colors shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
                 aria-label="Open chat"
               >
                 <MessageSquare className="h-4 w-4 text-white" />
-              </button>
+              </motion.button>
             )}
-            <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">
-              {tabs.map((tab) => (
-                <GlassTabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  className="group p-2 transition-all duration-200 rounded-lg"
-                  onClick={resetCollapseTimer}
-                >
-                  <tab.icon className="h-3.5 w-3.5" />
-                  <span className="ml-1.5 text-xs hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
-                </GlassTabsTrigger>
-              ))}
-            </GlassTabsList>
-          </div>
+          </AnimatePresence>
+
+          {/* The tab bar - always in same position */}
+          <GlassTabsList className="flex items-center justify-center gap-0.5 px-1.5 py-1 h-auto">
+            {tabs.map((tab) => (
+              <GlassTabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="group p-2 transition-all duration-200 rounded-lg"
+                onClick={resetCollapseTimer}
+              >
+                <tab.icon className="h-3.5 w-3.5" />
+                <span className="ml-1.5 text-xs hidden group-data-[state=active]:inline whitespace-nowrap">{tab.label}</span>
+              </GlassTabsTrigger>
+            ))}
+          </GlassTabsList>
         </div>
       </div>
 
