@@ -1152,40 +1152,59 @@ export default function DashboardPage() {
 
       </div>
 
-      {/* Floating Tab Bar - fixed at bottom of screen */}
+      {/* Floating Tab Bar - fixed at bottom of screen, always centered */}
       <div className="fixed bottom-0 left-0 right-0 z-20 flex justify-center pb-4 pt-2 pointer-events-none">
-        {/* Collapsed state - single floating button */}
-        <button
-          onClick={resetCollapseTimer}
-          className={`
-            transition-all duration-300 ease-out pointer-events-auto select-none
-            ${tabsExpanded ? 'opacity-0 scale-75 pointer-events-none absolute' : 'opacity-100 scale-100'}
-            relative p-3 rounded-xl
-            bg-white/10 backdrop-blur-xl border border-white/20
-            shadow-[0_4px_16px_rgba(0,0,0,0.2)]
-            hover:bg-white/15 active:scale-95
-            before:absolute before:inset-0 before:rounded-xl
-            before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none
-          `}
-          aria-label="Expand navigation"
-        >
-          <div className="relative z-10 flex items-center justify-center">
-            {(() => {
-              const activeTabData = tabs.find((t) => t.value === activeTab);
-              const TabIcon = activeTabData?.icon || LayoutDashboard;
-              return <TabIcon className="h-4 w-4 text-white" />;
-            })()}
-          </div>
-          <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
-        </button>
+        {/* Single centered container */}
+        <div className="relative flex flex-col items-center pointer-events-auto">
+          {/* Chat icon above - only visible when expanded */}
+          <AnimatePresence>
+            {tabsExpanded && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.2 }}
+                onClick={handleOpenChat}
+                className="mb-2 p-2 rounded-lg bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-colors shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+                aria-label="Open chat"
+              >
+                <MessageSquare className="h-4 w-4 text-white" />
+              </motion.button>
+            )}
+          </AnimatePresence>
 
-        {/* Expanded state - tabs with chat icon above */}
-        <div
-          className={`
-            relative pointer-events-auto transition-all duration-300 ease-out origin-bottom
-            ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
-          `}
-        >
+          {/* Collapsed state - single floating button */}
+          <button
+            onClick={resetCollapseTimer}
+            className={`
+              transition-all duration-300 ease-out select-none
+              ${tabsExpanded ? 'opacity-0 scale-75 pointer-events-none absolute' : 'opacity-100 scale-100'}
+              relative p-3 rounded-xl
+              bg-white/10 backdrop-blur-xl border border-white/20
+              shadow-[0_4px_16px_rgba(0,0,0,0.2)]
+              hover:bg-white/15 active:scale-95
+              before:absolute before:inset-0 before:rounded-xl
+              before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none
+            `}
+            aria-label="Expand navigation"
+          >
+            <div className="relative z-10 flex items-center justify-center">
+              {(() => {
+                const activeTabData = tabs.find((t) => t.value === activeTab);
+                const TabIcon = activeTabData?.icon || LayoutDashboard;
+                return <TabIcon className="h-4 w-4 text-white" />;
+              })()}
+            </div>
+            <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg opacity-60" />
+          </button>
+
+          {/* Expanded state - tabs */}
+          <div
+            className={`
+              transition-all duration-300 ease-out origin-bottom
+              ${tabsExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none absolute'}
+            `}
+          >
           {/* Chat icon above - only visible when expanded */}
           <AnimatePresence>
             {tabsExpanded && (
